@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import { Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
 import { useNavigate } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -33,13 +35,6 @@ const Label = styled.label`
   display: flex;
   flex-direction: column;
   font-size: 16px;
-`;
-
-const Input = styled.input`
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
 `;
 
 const StyledCalendar = styled(Calendar)`
@@ -85,6 +80,8 @@ const Button = styled.button`
 
 function MyLog() {
   const [date, setDate] = useState(new Date());
+  const [wakeTime, setWakeTime] = useState(new Date());
+  const [bedTime, setBedTime] = useState(new Date());
   const [emotions, setEmotions] = useState({
     Joy: 0,
     Sadness: 0,
@@ -158,11 +155,27 @@ function MyLog() {
         <h2>{formatDate(date)}</h2>
         <Label>
           기상시각:
-          <Input type="text" name="wakeTime" />
+          <DatePicker
+            selected={wakeTime}
+            onChange={(date) => setWakeTime(date)}
+            showTimeSelect
+            showTimeSelectOnly
+            timeIntervals={15}
+            timeCaption="Time"
+            dateFormat="h:mm aa"
+          />
         </Label>
         <Label>
           취침시각:
-          <Input type="text" name="bedTime" />
+          <DatePicker
+            selected={bedTime}
+            onChange={(date) => setBedTime(date)}
+            showTimeSelect
+            showTimeSelectOnly
+            timeIntervals={15}
+            timeCaption="Time"
+            dateFormat="h:mm aa"
+          />
         </Label>
         <Button onClick={() => navigate('/writediary')}>일기</Button>
         <Radar data={radarData} options={radarOptions} />
