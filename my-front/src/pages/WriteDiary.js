@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const DiaryContainer = styled.div`
   display: flex;
@@ -24,6 +25,16 @@ const TextArea = styled.textarea`
   margin-bottom: 20px;
 `;
 
+const Input = styled.input`
+  width: 100%;
+  max-width: 600px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 20px;
+`;
+
 const Button = styled.button`
   padding: 10px 20px;
   font-size: 16px;
@@ -35,30 +46,58 @@ const Button = styled.button`
 `;
 
 function WriteDiary() {
-  const [diaryEntry, setDiaryEntry] = useState('');
-
-  const handleChange = (event) => {
-    setDiaryEntry(event.target.value);
-  };
-
-  const handleSubmit = () => {
-    // 일기 제출 로직 추가 (예: 서버에 저장)
-    console.log('Diary Entry:', diaryEntry);
-    alert('일기가 제출되었습니다!');
-    setDiaryEntry(''); // 제출 후 입력 필드 초기화
-  };
-
-  return (
-    <DiaryContainer>
-      <Title>일기 작성</Title>
-      <TextArea 
-        value={diaryEntry} 
-        onChange={handleChange} 
-        placeholder="오늘의 일기를 작성하세요..." 
-      />
-      <Button onClick={handleSubmit}>제출</Button>
-    </DiaryContainer>
-  );
-}
-
-export default WriteDiary;
+    const [title, setTitle] = useState('');
+    const [context, setContext] = useState('');
+    const [date, setDate] = useState('');
+    const userId = 1; // 실제 사용자 ID를 가져와야 합니다
+  
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+          const response = await axios.post('http://localhost:3001/user-mylog', {
+            kakao_id: userId,
+            date: date,
+            title: title,
+            context: context,
+          }, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          console.log('일기 작성 성공:', response.data);
+          alert('일기가 제출되었습니다!');
+          setTitle('');
+          setContext('');
+          setDate('');
+        } catch (error) {
+          console.error('일기 작성 실패:', error.response ? error.response.data : error.message);
+        }
+      };
+  
+    return (
+        <DiaryContainer>
+          <Title>일기 작성</Title>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label>날짜:</label>
+              <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+            </div>
+            <div>
+              <label>제목:</label>
+              <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+            </div>
+            <div>
+              <TextArea 
+                value={context} 
+                onChange={(e) => setContext(e.target.value)} 
+                placeholder="오늘의 일기를 작성하세요..." 
+                required
+              />
+            </div>
+            <Button type="submit">제출</Button>
+          </form>
+        </DiaryContainer>
+      );
+    }
+    
+    export default WriteDiary;
