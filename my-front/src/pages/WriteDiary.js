@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
@@ -49,28 +49,63 @@ function WriteDiary() {
     const [title, setTitle] = useState('');
     const [context, setContext] = useState('');
     const [date, setDate] = useState('');
+    const [isExisting, setIsExisting] = useState(false);
     const userId = 1; // 실제 사용자 ID를 가져와야 합니다
+
+    useEffect(() => {
+        if (date) {
+            fetchDiary();
+        }
+    }, [date]);
+
+    const fetchDiary = async () => {
+        try {
+            const response = await axios.get(`http://localhost:3001/user-mylog/${userId}/${date}`);
+            if (response.data) {
+                setTitle(response.data.title);
+                setContext(response.data.context);
+                setIsExisting(true);
+            } else {
+                setTitle('');
+                setContext('');
+                setIsExisting('');
+            }
+        }   catch (error) {
+            console.error('일기 불러오기 실패:', error.response ? error.response.data : error.message);
+            setTitle('');
+            setContext('');
+            setIsExisting(false);
+        }
+    };
   
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-          const response = await axios.post('http://localhost:3001/user-mylog', {
-            kakao_id: userId,
-            date: date,
-            title: title,
-            context: context,
-          }, {
+          const url = isExisting 
+            ? `http://localhost:3001/user-mylog/${userId}/${date}`
+            : `http://localhost:3001/user-mylog`;
+          const method = isExisting ? 'put' : 'post';
+
+          const response = await axios({
+            method: method,
+            url: url,
+            data: {
+                kakao_id: userId,
+                date: date,
+                title: title,
+                context: context,
+            },
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
           });
-          console.log('일기 작성 성공:', response.data);
-          alert('일기가 제출되었습니다!');
-          setTitle('');
-          setContext('');
-          setDate('');
-        } catch (error) {
-          console.error('일기 작성 실패:', error.response ? error.response.data : error.message);
+
+          console.log('일기 저장 성공:', response.data);
+          alert('일기가 저장되었습니다!');
+          if (!isExisting) setIsExisting(true);
+        } 
+        catch (error) {
+            console.error('일기 저장 실패:', error.response ? error.response.data : error.message);
         }
       };
   
@@ -94,7 +129,7 @@ function WriteDiary() {
                 required
               />
             </div>
-            <Button type="submit">제출</Button>
+            <Button type="submit">{isExisting ? '수정' : '제출'}</Button>
           </form>
         </DiaryContainer>
       );

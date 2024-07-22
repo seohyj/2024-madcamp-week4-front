@@ -150,7 +150,7 @@ function MyLog() {
     const today = new Date().toISOString().split('T')[0]; //YYYY-MM-DD 형식으로 오늘 날짜 구하기
 
     try {
-      const response = await axios.put(`http://localhost:3000/user-mylog/${userId}/${today}/wake-time`, {
+      const response = await axios.put(`http://localhost:3001/user-mylog/${userId}/${today}/wake-time`, {
         wake_time: currentTume,
       });
       console.log('기상 시각 기록 성공:', response.data);
@@ -165,7 +165,7 @@ function MyLog() {
     const today = new Date().toISOString().split('T')[0]; //YYYY-MM-DD 형식으로 오늘 날짜 구하기
 
     try {
-      const response = await axios.put(`http://localhost:3000/user-mylog/${userId}/${today}/sleep-time`, {
+      const response = await axios.put(`http://localhost:3001/user-mylog/${userId}/${today}/sleep-time`, {
         sleep_time: currentTume,
       });
       console.log('수면 시각 기록 성공:', response.data);
