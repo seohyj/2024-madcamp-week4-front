@@ -126,11 +126,11 @@ function Frontal() {
         return "치매 (Dementia)";
       }
     } else if (testType === 'visual') {
-      if (totalTime <= 16 && accuracy >= 80) {
+      if (accuracy >= 80) {
         return "정상 범위";
-      } else if (totalTime <= 24 && accuracy >= 60) {
+      } else if (accuracy >= 60) {
         return "경도 인지 장애 (Mild Cognitive Impairment)";
-      } else if (totalTime <= 32 && accuracy >= 40) {
+      } else if (accuracy >= 40) {
         return "중등도 인지 장애 (Moderate Cognitive Impairment)";
       } else {
         return "심각한 인지 장애 (Severe Cognitive Impairment)";
@@ -234,7 +234,7 @@ function Frontal() {
     <p>진단 결과: {getDiagnosis()}</p>
     {testType === 'stroop' && (
       <div>
-        <h3>스트룹 테스트 평가 기준</h3>
+        <h3>Stroop Test 평가 기준</h3>
         <ul>
           <li><strong>정상 범위:</strong> 총 걸린 시간 90초 이내, 정답률 90% 이상</li>
           <li><strong>주의력 결핍 및 과잉행동 장애 (ADHD):</strong> 총 걸린 시간 90초 ~ 135초, 정답률 70% ~ 89%</li>
@@ -245,12 +245,12 @@ function Frontal() {
     )}
     {testType === 'visual' && (
       <div>
-        <h3>시각 학습 테스트 평가 기준</h3>
+        <h3>Visuospatial Memory Test 평가 기준</h3>
         <ul>
-          <li><strong>정상 범위:</strong> 총 걸린 시간 16초 이내, 정답률 80% 이상</li>
-          <li><strong>경도 인지 장애 (Mild Cognitive Impairment):</strong> 총 걸린 시간 16초 ~ 24초, 정답률 60% ~ 79%</li>
-          <li><strong>중등도 인지 장애 (Moderate Cognitive Impairment):</strong> 총 걸린 시간 24초 ~ 32초, 정답률 40% ~ 59%</li>
-          <li><strong>심각한 인지 장애 (Severe Cognitive Impairment):</strong> 총 걸린 시간 32초 이상, 정답률 40% 미만</li>
+          <li><strong>정상 범위:</strong> 정답률 80% 이상</li>
+          <li><strong>경도 인지 장애 (Mild Cognitive Impairment):</strong> 정답률 60% ~ 79%</li>
+          <li><strong>중등도 인지 장애 (Moderate Cognitive Impairment):</strong> 정답률 40% ~ 59%</li>
+          <li><strong>심각한 인지 장애 (Severe Cognitive Impairment):</strong> 정답률 40% 미만</li>
         </ul>
       </div>
     )}
