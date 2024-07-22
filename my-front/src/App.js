@@ -10,6 +10,7 @@ import Hippo from './pages/Brain/hippo';
 import Medial from './pages/Brain/medial';
 import ScrollToTop from './components/ScrollToTop';
 import './App.css';
+import Login from './Login';
 
 const logo = '/logo192.png';
 
@@ -29,6 +30,7 @@ function App() {
               <li><Link to="/brain/frontal">Frontal</Link></li>
               <li><Link to="/brain/hippo">Hippocampus</Link></li>
               <li><Link to="/brain/medial">Medial</Link></li>
+              <li><Link to="/login">Login</Link></li> {/* Login 링크 추가 */}
             </ul>
           </nav>
         </header>
@@ -42,6 +44,7 @@ function App() {
             <Route path="/brain/frontal" element={<Frontal />} />
             <Route path="/brain/hippo" element={<Hippo />} />
             <Route path="/brain/medial" element={<Medial />} />
+            <Route path="/login" element={<Login />} /> {/* Login 라우트 추가 */}
           </Routes>
         </main>
       </div>

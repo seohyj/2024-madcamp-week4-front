@@ -1,6 +1,7 @@
 // 메인 페이지
 // 1) 뇌 UI -> 각 Brain Page
 // 2) -> My Log
+// src/Main.js
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Main.css'; // CSS 파일을 가져옵니다.
@@ -8,6 +9,15 @@ import './Main.css'; // CSS 파일을 가져옵니다.
 function Main() {
   return (
     <div className="main-container">
+      <header>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
+          </ul>
+        </nav>
+      </header>
       <div className="link-box">
         <Link to="/mylog">My Log</Link>
       </div>
@@ -35,3 +45,4 @@ function Main() {
 }
 
 export default Main;
+

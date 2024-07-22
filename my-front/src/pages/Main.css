@@ -2,87 +2,75 @@
 
 /* body 태그의 기본 스타일 */
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-  }
-  
-  /* 주요 컨테이너 스타일 */
-  .container {
-    width: 80%;
-    margin: auto;
-    overflow: hidden;
-  }
-  
-  /* 헤더 스타일 */
-  header {
-    background: #35424a;
-    color: #ffffff;
-    padding-top: 30px;
-    min-height: 70px;
-    border-bottom: #ddd6d4 3px solid;
-  }
-  
-  header a {
-    color: #ffffff;
-    text-decoration: none;
-    text-transform: uppercase;
-    font-size: 16px;
-  }
-  
-  header ul {
-    padding: 0;
-    list-style: none;
-  }
-  
-  header li {
-    display: inline;
-    padding: 0 20px 0 20px;
-  }
-  
-  header #branding {
-    float: left;
-  }
-  
-  header #branding h1 {
-    margin: 0;
-  }
-  
-  header nav {
-    float: right;
-    margin-top: 10px;
-  }
-  
-  /* 버튼 스타일 */
-  button {
-    display: inline-block;
-    font-size: 18px;
-    color: #ffffff;
-    background-color: #35424a;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #e8491d;
-  }
-  
-  /* 주요 섹션 스타일 */
-  .main-section {
-    padding: 20px;
-    background: #ffffff;
-    margin-top: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .main-section h2 {
-    text-align: center;
-    margin-top: 0;
-  }
-  
-  .main-section p {
-    line-height: 1.6;
-  }
-  
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+/* 주요 컨테이너 스타일 */
+.container {
+  width: 80%;
+  margin: auto;
+  overflow: hidden;
+}
+
+/* 헤더 스타일 */
+header {
+  background: #35424a;
+  color: #ffffff;
+  padding-top: 10px;
+  min-height: 50px;
+  border-bottom: #ddd6d4 3px solid;
+}
+
+header ul {
+  padding: 0;
+  list-style: none;
+  display: flex;
+  justify-content: flex-end;
+  margin: 0;
+}
+
+header li {
+  padding: 0 20px;
+}
+
+header a {
+  color: #ffffff;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 16px;
+}
+
+/* 버튼 스타일 */
+button {
+  display: inline-block;
+  font-size: 18px;
+  color: #ffffff;
+  background-color: #35424a;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #e8491d;
+}
+
+/* 주요 섹션 스타일 */
+.main-section {
+  padding: 20px;
+  background: #ffffff;
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.main-section h2 {
+  text-align: center;
+  margin-top: 0;
+}
+
+.main-section p {
+  line-height: 1.6;
+}
