@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
@@ -93,6 +94,8 @@ function MyLog() {
 
   const navigate = useNavigate();
 
+  const userId = 1; // 실제 사용자 ID를 가져와야 합니다
+
   const onChange = date => {
     setDate(date);
   };
@@ -141,6 +144,36 @@ function MyLog() {
     onClick: (event, elements) => handleClick(event, elements)
   };
 
+  // wake-time 기록
+  const handleRecordWakeTime = async() => {
+    const currentTume = new Date().toISOString();
+    const today = new Date().toISOString().split('T')[0]; //YYYY-MM-DD 형식으로 오늘 날짜 구하기
+
+    try {
+      const response = await axios.put(`http://localhost:3000/user-mylog/${userId}/${today}/wake-time`, {
+        wake_time: currentTume,
+      });
+      console.log('기상 시각 기록 성공:', response.data);
+    } catch (error) {
+      console.error('기상 시각 기록 실패:', error);
+    }
+  };
+
+  // sleep-time 기록
+  const handleRecordSleepTime = async() => {
+    const currentTume = new Date().toISOString();
+    const today = new Date().toISOString().split('T')[0]; //YYYY-MM-DD 형식으로 오늘 날짜 구하기
+
+    try {
+      const response = await axios.put(`http://localhost:3000/user-mylog/${userId}/${today}/sleep-time`, {
+        sleep_time: currentTume,
+      });
+      console.log('수면 시각 기록 성공:', response.data);
+    } catch (error) {
+      console.error('수면 시각 기록 실패:', error);
+    }
+  };
+
   return (
     <LogContainer>
       <CalendarContainer>
@@ -177,6 +210,8 @@ function MyLog() {
             dateFormat="h:mm aa"
           />
         </Label>
+        <Button onClick={handleRecordWakeTime}>기상시각 기록</Button>
+        <Button onClick={handleRecordSleepTime}>취침시각 기록</Button>
         <Button onClick={() => navigate('/writediary')}>일기</Button>
         <Radar data={radarData} options={radarOptions} />
       </InputContainer>
