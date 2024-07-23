@@ -27,7 +27,7 @@ const Login = () => {
   const handleLogout = () => {
     localStorage.removeItem('kakaoId');
     setIsLoggedIn(false);
-    navigate('/login');
+    navigate('/main');
   };
 
   /*return (
@@ -42,7 +42,6 @@ const Login = () => {
   );*/
   return (
     <Container>
-      <BackgroundImage src={backgroundImage} />
       <LoginBox>
         <TextContainer>
           <Title>Boggle Boggle</Title>
@@ -61,38 +60,32 @@ export default Login;
 // Styled Components
 
 const Container = styled.div`
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: 
+    linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1)), 
+    url(${backgroundImage}) no-repeat center center;
+  background-size: cover;
   position: relative;
-  background: linear-gradient(315deg, rgba(131.71, 131.71, 131.71, 0.80) 0%, rgba(169.45, 169.45, 169.45, 0.80) 50%, rgba(150.42, 150.42, 150.42, 0.80) 100%), 
-              linear-gradient(0deg, rgba(235.37, 233.66, 255, 0.49) 0%, rgba(235.37, 233.66, 255, 0.49) 100%);
-  background-image: url(${backgroundImage});
-`;
-
-const BackgroundImage = styled.img`
-  width: 1920px;
-  height: 1080px;
-  left: 0;
-  top: 0;
-  position: no-repeat center center;
 `;
 
 const LoginBox = styled.div`
-  width: 1026px;
-  height: 596px;
+  width: 900px;
+  height: 450px;
   padding: 85px 90px;
-  left: 447px;
-  top: 242px;
-  position: absolute;
   background: rgba(255, 255, 255, 0.10);
   border-radius: 40px;
-  border: 3px solid white;
+  border: 1px solid white;
   backdrop-filter: blur(25px);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 30px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3);
 `;
 
 const TextContainer = styled.div`
@@ -103,6 +96,7 @@ const TextContainer = styled.div`
   gap: 30px;
   height: 180px;
   width: 100%;
+  letter-spacing: -1.2px;
 `;
 
 const Title = styled.div`
@@ -112,6 +106,7 @@ const Title = styled.div`
   font-family: 'Avenir', sans-serif;
   font-weight: 900;
   word-wrap: break-word;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const Subtitle = styled.div`
@@ -121,6 +116,7 @@ const Subtitle = styled.div`
   font-family: 'Avenir', sans-serif;
   font-weight: 300;
   word-wrap: break-word;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const LogInButton = styled.div`
