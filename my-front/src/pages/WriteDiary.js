@@ -68,7 +68,7 @@ function WriteDiary() {
             } else {
                 setTitle('');
                 setContext('');
-                setIsExisting('');
+                setIsExisting('false');
             }
         }   catch (error) {
             console.error('일기 불러오기 실패:', error.response ? error.response.data : error.message);
@@ -103,8 +103,7 @@ function WriteDiary() {
           console.log('일기 저장 성공:', response.data);
           alert('일기가 저장되었습니다!');
           if (!isExisting) setIsExisting(true);
-        } 
-        catch (error) {
+        } catch (error) {
             console.error('일기 저장 실패:', error.response ? error.response.data : error.message);
         }
       };
