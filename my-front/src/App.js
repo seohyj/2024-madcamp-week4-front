@@ -1,3 +1,4 @@
+// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Main from './pages/Main';
@@ -10,7 +11,9 @@ import Hippo from './pages/Brain/hippo';
 import Medial from './pages/Brain/medial';
 import ScrollToTop from './components/ScrollToTop';
 import './App.css';
-import Login from './Login';
+import Login from './pages/Login'; // Login 경로 수정
+import Logout from './pages/Logout'; // Logout 경로 수정
+import KakaoCallback from './KakaoCallback'; // KakaoCallback 페이지 추가
 
 const logo = '/logo192.png';
 
@@ -24,6 +27,7 @@ function App() {
           <nav>
             <ul>
               <li><Link to="/">Main</Link></li>
+              <li><Link to="/main">Main</Link></li> {/* Main 링크 추가 */}
               <li><Link to="/mylog">My Log</Link></li>
               <li><Link to="/brain/amygd">Amygdala</Link></li>
               <li><Link to="/brain/basal">Basal</Link></li>
@@ -31,12 +35,14 @@ function App() {
               <li><Link to="/brain/hippo">Hippocampus</Link></li>
               <li><Link to="/brain/medial">Medial</Link></li>
               <li><Link to="/login">Login</Link></li> {/* Login 링크 추가 */}
+              <li><Link to="/logout">Logout</Link></li> {/* Logout 링크 추가 */}
             </ul>
           </nav>
         </header>
         <main>
           <Routes>
             <Route path="/" element={<Main />} />
+            <Route path="/main" element={<Main />} /> {/* Main 라우트 추가 */}
             <Route path="/mylog" element={<MyLog />} />
             <Route path="/writediary" element={<WriteDiary />} />
             <Route path="/brain/amygd" element={<Amygd />} />
@@ -45,6 +51,8 @@ function App() {
             <Route path="/brain/hippo" element={<Hippo />} />
             <Route path="/brain/medial" element={<Medial />} />
             <Route path="/login" element={<Login />} /> {/* Login 라우트 추가 */}
+            <Route path="/logout" element={<Logout />} /> {/* Logout 라우트 추가 */}
+            <Route path="/user/kakao/callback" element={<KakaoCallback />} /> {/* KakaoCallback 라우트 추가 */}
           </Routes>
         </main>
       </div>
