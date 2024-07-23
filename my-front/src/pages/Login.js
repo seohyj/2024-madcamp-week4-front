@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
 import backgroundImage from '../assets/UI_images/LoginPage.png';
 
 const Login = () => {
@@ -10,6 +9,15 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (window.Kakao) {
+      if (!window.Kakao.isInitialized()) {
+        window.Kakao.init('28536f52ecf147bcad7e4f6d79f83ced'); // 실제 발급받은 JavaScript 키로 변경
+        console.log('Kakao SDK initialized');
+      }
+    } else {
+      console.error('Kakao SDK가 로드되지 않았습니다.');
+    }
+
     const kakaoId = localStorage.getItem('kakaoId');
     if (kakaoId) {
       setIsLoggedIn(true);
@@ -24,22 +32,6 @@ const Login = () => {
     window.location.href = kakaoAuthUrl;
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('kakaoId');
-    setIsLoggedIn(false);
-    navigate('/login');
-  };
-
-  /*return (
-    <div>
-      <h1>Login</h1>
-      {isLoggedIn ? (
-        <button onClick={handleLogout}>Logout</button>
-      ) : (
-        <button onClick={handleKakaoLogin}>카카오로 로그인하기</button>
-      )}
-    </div>
-  );*/
   return (
     <Container>
       <BackgroundImage src={backgroundImage} />
@@ -59,7 +51,6 @@ const Login = () => {
 export default Login;
 
 // Styled Components
-
 const Container = styled.div`
   width: 100%;
   height: 100%;
