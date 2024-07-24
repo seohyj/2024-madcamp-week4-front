@@ -8,6 +8,7 @@ import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler,
 import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import moment from 'moment-timezone';
 
 import backgroundImage from '../assets/UI_images/MyLog.png';
 import Header from '../components/Header';
@@ -17,6 +18,7 @@ ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, 
 function MyLog() {
   // kakaoId 상태로 관리
   const [kakaoId, setKakaoId] = useState(null);
+  const [nickname, setNickname] = useState('');
   // date, waketime, sleeptime 상태로 관리
   const [date, setDate] = useState(new Date());
   const [wakeTime, setWakeTime] = useState(new Date());
@@ -34,20 +36,19 @@ function MyLog() {
 
   useEffect(() => {
     const storedKakaoId = localStorage.getItem('kakaoId');
-    if (!storedKakaoId) {
-      //navigate('/login'); // 로그인되지 않은 경우 로그인 페이지로 리디렉션
-    } else {
+    if (storedKakaoId) {
       setKakaoId(storedKakaoId);
-      fetchEmotionsData(storedKakaoId, date.toISOString().split('T')[0]);
+      axios.get(`http://localhost:3001/user/kakao/nickname?kakao_id=${storedKakaoId}`)
+        .then(response => {
+          setNickname(response.data.nickname);
+        })
+        .catch(error => {
+          console.error('There was an error fetching the nickname!', error);
+        });
+    } else {
+      navigate('/login');
     }
-  }, [navigate, date]);
-
-  // 로그아웃 처리 로직
-  const handleLogout = () => {
-    localStorage.removeItem('kakaoId');
-    setKakaoId(null);
-    navigate('/login');
-  };
+  }, [navigate]);
 
   const onChange = date => {
     setDate(date);
@@ -59,12 +60,13 @@ function MyLog() {
   };
 
   // wake-time 기록
-  const handleRecordWakeTime = async() => {
-    const today = new Date().toISOString().split('T')[0]; //YYYY-MM-DD 형식으로 오늘 날짜 구하기
-
+  const handleRecordWakeTime = async () => {
+    const selectedTime = wakeTime;
+    const kstTime = moment(selectedTime).tz('Asia/Seoul').toISOString();
+    const selectedDate = moment(date).tz('Asia/Seoul').format('YYYY-MM-DD');
     try {
-      const response = await axios.put(`http://localhost:3001/user-mylog/${kakaoId}/${today}/wake-time`, {
-        wake_time: wakeTime.toISOString(),  // 확인: currentTume -> currentTime
+      const response = await axios.put(`http://localhost:3001/user-mylog/${kakaoId}/${selectedDate}/wake-time`, {
+        wake_time: kstTime,
       });
       console.log('기상 시각 기록 성공:', response.data);
     } catch (error) {
@@ -72,19 +74,22 @@ function MyLog() {
     }
   };
 
-  // sleep-time 기록
-  const handleRecordSleepTime = async() => {
-    const today = new Date().toISOString().split('T')[0]; //YYYY-MM-DD 형식으로 오늘 날짜 구하기
 
+  // sleep-time 기록
+  const handleRecordSleepTime = async () => {
+    const selectedTime = sleepTime;
+    const kstTime = moment(selectedTime).tz('Asia/Seoul').toISOString();
+    const selectedDate = moment(date).tz('Asia/Seoul').format('YYYY-MM-DD');
     try {
-      const response = await axios.put(`http://localhost:3001/user-mylog/${kakaoId}/${today}/sleep-time`, {
-        sleep_time: sleepTime.toISOString(),  // 확인: currentTume -> currentTime
+      const response = await axios.put(`http://localhost:3001/user-mylog/${kakaoId}/${selectedDate}/sleep-time`, {
+        sleep_time: kstTime,
       });
       console.log('수면 시각 기록 성공:', response.data);
     } catch (error) {
       console.error('수면 시각 기록 실패:', error);
     }
   };
+
 
   const fetchEmotionsData = async (kakaoId, selectedDate) => {
     try {
@@ -145,7 +150,7 @@ function MyLog() {
 
   return (
     <Container>
-      <Header handleLogout={() => { localStorage.removeItem('kakaoId'); navigate('/login'); }} />
+      <Header /*handleLogout={() => { localStorage.removeItem('kakaoId'); navigate('/login'); }}*/ />
       
       <LogContainer>
         <DateText>{formatDate(date)}</DateText>

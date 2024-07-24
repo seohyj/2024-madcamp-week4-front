@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
 import backgroundImage from '../assets/UI_images/LoginPage.png';
 
 const Login = () => {
@@ -24,22 +23,6 @@ const Login = () => {
     window.location.href = kakaoAuthUrl;
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('kakaoId');
-    setIsLoggedIn(false);
-    navigate('/main');
-  };
-
-  /*return (
-    <div>
-      <h1>Login</h1>
-      {isLoggedIn ? (
-        <button onClick={handleLogout}>Logout</button>
-      ) : (
-        <button onClick={handleKakaoLogin}>카카오로 로그인하기</button>
-      )}
-    </div>
-  );*/
   return (
     <Container>
       <LoginBox>
@@ -58,7 +41,6 @@ const Login = () => {
 export default Login;
 
 // Styled Components
-
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
