@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import './Main.css'; // CSS 파일을 가져옵니다.
 
-import backgroundImage from '../assets/UI_images/Main.png';
+import backgroundImage from '../assets/UI_images/MyLog.png';
 import brainImage from '../assets/buttons/Pink brain.png';
 import basalImage from '../assets/buttons/basal.png';
 import amygdImage from '../assets/buttons/amygl.png';
@@ -187,45 +187,51 @@ const LinkBox = styled(Link)`
   text-decoration: none;
 
   &.brain-position {
+    // 뇌
     left: center;
-    bottom: 458px;
+    bottom: 350px;
     position: center;
-    width: 48%;
-    height: 48%;
+    width: 40%;
+    height: 40%;
 
   }
 
   &.hippo {
-    left: 1000px;
-    bottom: 290px;
+    // 해마
+    left: 400px;
+    bottom: 390px;
     width: 115px;
     height: 118px;
   }
 
-  &.amygdala {
-    left: 1385px;
-    bottom: 160px;
-    width: 87px;
-    height: 89px;
-  }
-
   &.basal-ganglia {
-    left: 1090px;
-    bottom: 180px;
+    // 기저핵
+    left: 550px;
+    bottom: 230px;
     width: 77px;
     height: 79px;
   }
 
   &.frontal-lobe {
-    left: 1220px;
-    bottom: 185px;
+    // 전두엽
+    position: center;
+    bottom: 180px;
     width: 114px;
     height: 117px;
   }
 
+  &.amygdala {
+    // 편도체
+    right: 600px;
+    bottom: 230px;
+    width: 87px;
+    height: 89px;
+  }
+
   &.medial {
-    left: 1440px;
-    bottom: 295px;
+    // 내측 측두엽
+    right: 400px;
+    bottom: 395px;
     width: 114px;
     height: 117px;
   }

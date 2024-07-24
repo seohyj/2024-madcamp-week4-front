@@ -55,7 +55,7 @@ button {
 }
 
 button:hover {
-  background-color: #a9a9a9;
+  background-color: #e9fec4;
 }
 
 /* 주요 섹션 스타일 */
@@ -74,3 +74,5 @@ button:hover {
 .main-section p {
   line-height: 1.6;
 }
+
+/*.dfsa{color: #f9ec8b,#92abd6,#cfb9e3, #a1dda1, #b46060, #edbfc8}*/

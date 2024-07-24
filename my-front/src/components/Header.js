@@ -5,6 +5,7 @@ import logoImage from '../assets/UI_images/brainLogo.png';
 
 const HeaderContainer = styled.div`
   width: 100%;
+  height: 7vh;
   padding-top: 10px;
   padding-bottom: 10px;
   display: flex;
@@ -36,12 +37,12 @@ const LogoLink = styled(Link)`
 `;
 
 const Logo = styled.img`
-  width: 59px;
-  height: 59px;
+  width: 49px;
+  height: 49px;
 `;
 
 const Title = styled.div`
-  font-size: 25px;
+  font-size: 23px;
   font-family: 'Avenir', sans-serif;
   font-weight: 900;
   line-height: 24px;
@@ -62,7 +63,7 @@ const LogoutButton = styled.button`
 
 const LogoutText = styled.div`
   color: #151515;
-  font-size: 18px;
+  font-size: 15px;
   font-family: 'Roboto', sans-serif;
   font-weight: 800;
   line-height: 24px;

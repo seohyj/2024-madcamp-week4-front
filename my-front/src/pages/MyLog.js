@@ -15,29 +15,13 @@ import Header from '../components/Header';
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 function MyLog() {
+  // kakaoId 상태로 관리
   const [kakaoId, setKakaoId] = useState(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const storedKakaoId = localStorage.getItem('kakaoId');
-    if (!storedKakaoId) {
-      //navigate('/login'); // 로그인되지 않은 경우 로그인 페이지로 리디렉션
-    } else {
-      setKakaoId(storedKakaoId);
-    }
-  }, [navigate]);
-
-  const handleLogout = () => {
-    localStorage.removeItem('kakaoId');
-    setKakaoId(null);
-    navigate('/login');
-  };
-
-  const userId = 1; // 실제 사용자 ID를 가져와야 합니다
-
+  // date, waketime, sleeptime 상태로 관리
   const [date, setDate] = useState(new Date());
   const [wakeTime, setWakeTime] = useState(new Date());
-  const [bedTime, setBedTime] = useState(new Date());
+  const [sleepTime, setSleepTime] = useState(new Date());
+  // 감정 데이터를 상태로 분리
   const [emotions, setEmotions] = useState({
     Joy: 0,
     Sadness: 0,
@@ -46,6 +30,24 @@ function MyLog() {
     Anger: 0,
     Surprise: 0
   });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedKakaoId = localStorage.getItem('kakaoId');
+    if (!storedKakaoId) {
+      //navigate('/login'); // 로그인되지 않은 경우 로그인 페이지로 리디렉션
+    } else {
+      setKakaoId(storedKakaoId);
+      fetchEmotionsData(storedKakaoId, date.toISOString().split('T')[0]);
+    }
+  }, [navigate, date]);
+
+  // 로그아웃 처리 로직
+  const handleLogout = () => {
+    localStorage.removeItem('kakaoId');
+    setKakaoId(null);
+    navigate('/login');
+  };
 
   const onChange = date => {
     setDate(date);
@@ -56,53 +58,13 @@ function MyLog() {
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
 
-  const radarData = {
-    labels: ['Joy', 'Sadness', 'Fear', 'Disgust', 'Anger', 'Surprise'],
-    datasets: [
-      {
-        label: 'Emotions',
-        data: Object.values(emotions),
-        backgroundColor: 'rgba(34, 202, 236, 0.2)',
-        borderColor: 'rgba(34, 202, 236, 1)',
-        borderWidth: 1
-      }
-    ]
-  };
-
-  const handleClick = (event, elements) => {
-    if (elements.length > 0) {
-      const { index, datasetIndex } = elements[0];
-      const value = radarData.datasets[datasetIndex].data[index];
-      const label = radarData.labels[index];
-      const newValue = value + 0.2 > 1 ? 0 : value + 0.2;
-
-      setEmotions(prevState => ({
-        ...prevState,
-        [label]: newValue
-      }));
-    }
-  };
-
-  const radarOptions = {
-    scale: {
-      ticks: {
-        beginAtZero: true,
-        min: 0,
-        max: 1,
-        stepSize: 0.2
-      }
-    },
-    onClick: (event, elements) => handleClick(event, elements)
-  };
-
   // wake-time 기록
   const handleRecordWakeTime = async() => {
-    const currentTume = new Date().toISOString();
     const today = new Date().toISOString().split('T')[0]; //YYYY-MM-DD 형식으로 오늘 날짜 구하기
 
     try {
-      const response = await axios.put(`http://localhost:3001/user-mylog/${userId}/${today}/wake-time`, {
-        wake_time: currentTume,
+      const response = await axios.put(`http://localhost:3001/user-mylog/${kakaoId}/${today}/wake-time`, {
+        wake_time: wakeTime.toISOString(),  // 확인: currentTume -> currentTime
       });
       console.log('기상 시각 기록 성공:', response.data);
     } catch (error) {
@@ -112,12 +74,11 @@ function MyLog() {
 
   // sleep-time 기록
   const handleRecordSleepTime = async() => {
-    const currentTume = new Date().toISOString();
     const today = new Date().toISOString().split('T')[0]; //YYYY-MM-DD 형식으로 오늘 날짜 구하기
 
     try {
-      const response = await axios.put(`http://localhost:3001/user-mylog/${userId}/${today}/sleep-time`, {
-        sleep_time: currentTume,
+      const response = await axios.put(`http://localhost:3001/user-mylog/${kakaoId}/${today}/sleep-time`, {
+        sleep_time: sleepTime.toISOString(),  // 확인: currentTume -> currentTime
       });
       console.log('수면 시각 기록 성공:', response.data);
     } catch (error) {
@@ -125,53 +86,136 @@ function MyLog() {
     }
   };
 
+
+  const fetchEmotionsData = async (kakaoId, selectedDate) => {
+    try {
+      const emotionsResponse = await axios.get(`http://localhost:3001/user-mylog/${kakaoId}/${selectedDate}/emotions`);
+      setEmotions(emotionsResponse.data);
+    } catch (error) {
+      console.error('Failed to fetch emotions data:', error);
+    }
+  };
+
+  // Handle slider change
+  const handleSliderChange = (emotion, value) => {
+    setEmotions((prevEmotions) => ({
+      ...prevEmotions,
+      [emotion]: value
+    }));
+  };
+
+  // Save emotions to the server
+  const handleSaveEmotions = async () => {
+    const requestData = {
+      ...emotions,
+      kakao_id: kakaoId,
+      date: date.toISOString().split('T')[0]
+    };
+
+    try {
+      const response = await axios.put(`http://localhost:3001/user-mylog/${kakaoId}/${date.toISOString().split('T')[0]}/emotions`, requestData);
+      console.log('Emotions saved successfully:', response.data);
+    } catch (error) {
+      console.error('Failed to save emotions:', error);
+    }
+  };
+
+  const radarData = {
+    labels: ['Joy', 'Sadness', 'Fear', 'Disgust', 'Anger', 'Surprise'],
+    datasets: [
+      {
+        label: 'Emotions',
+        data: Object.values(emotions),
+        backgroundColor: 'rgba(181, 255, 117, 0.2)',
+        borderColor: 'rgba(151, 206, 104, 1.0)',
+        borderWidth: 1
+      }
+    ]
+  };
+  
+  const radarOptions = {
+    scale: {
+      ticks: {
+        beginAtZero: true,
+        min: 0,
+        max: 1,
+        stepSize: 0.2
+      }
+    },
+  };
+
   return (
     <Container>
-      <Header handleLogout={handleLogout} />
+      <Header handleLogout={() => { localStorage.removeItem('kakaoId'); navigate('/login'); }} />
       
       <LogContainer>
         <DateText>{formatDate(date)}</DateText>
         <ContentWrapper>
           <CalendarContainer>
             <StyledCalendar
-              onChange={onChange}
+              onChange={setDate}
               value={date}
             />
+            <LeftInputContainer>
+              <InputBox>
+                <InputTitle>오늘의 기상 시각</InputTitle>
+                <DatePicker 
+                  selected={wakeTime} 
+                  onChange={setWakeTime} 
+                  showTimeSelect 
+                  showTimeSelectOnly 
+                  timeIntervals={10} 
+                  timeCaption="Time" 
+                  dateFormat="h:mm aa" 
+                  customInput={<InputField />} 
+                />
+                <Button onClick={handleRecordWakeTime}>기상시각 기록</Button>
+              </InputBox>
+              <InputBox>
+                <InputTitle>어젯밤의 취침 시각</InputTitle>
+                <DatePicker
+                  selected={sleepTime}
+                  onChange={(date) => setSleepTime(date)}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={10}
+                  timeCaption="Time"
+                  dateFormat="h:mm aa"
+                  customInput={<InputField />}
+                />
+                <Button onClick={handleRecordSleepTime}>취침시각 기록</Button>
+              </InputBox>
+              <DiaryButton onClick={() => navigate('/writediary')}>일기 쓰기</DiaryButton>
+            </LeftInputContainer>
           </CalendarContainer>
-          <InputContainer>
-            <InputBox>
-              <InputTitle>오늘의 기상 시각</InputTitle>
-              <DatePicker
-                selected={wakeTime}
-                onChange={(date) => setWakeTime(date)}
-                showTimeSelect
-                showTimeSelectOnly
-                timeIntervals={15}
-                timeCaption="Time"
-                dateFormat="h:mm aa"
-                customInput={<InputField />}
-              />
-            </InputBox>
-            <InputBox>
-              <InputTitle>오늘의 취침 시각</InputTitle>
-              <DatePicker
-                selected={bedTime}
-                onChange={(date) => setBedTime(date)}
-                showTimeSelect
-                showTimeSelectOnly
-                timeIntervals={15}
-                timeCaption="Time"
-                dateFormat="h:mm aa"
-                customInput={<InputField />}
-              />
-            </InputBox>
-            <Button onClick={handleRecordWakeTime}>기상시각 기록</Button>
-            <Button onClick={handleRecordSleepTime}>취침시각 기록</Button>
-            <Button onClick={() => navigate('/writediary')}>일기 쓰기</Button>
+          <RightInputContainer>
             <RadarWrapper>
               <Radar data={radarData} options={radarOptions} />
+              <SliderWrapper>
+                {Object.keys(emotions).map((emotion) => (
+                  <div key={emotion}>
+                    <label>{emotion}</label>
+                    <input 
+                      type="range" 
+                      min="0" 
+                      max="1" 
+                      step="0.01" 
+                      value={emotions[emotion]}
+                      onChange={(e) => handleSliderChange(emotion, parseFloat(e.target.value))}
+                      style={{ 
+                        background: `linear-gradient(to right, 
+                        ${emotionColors[emotion]} 0%, 
+                        ${emotionColors[emotion]} ${emotions[emotion] * 100}%, 
+                        #ddd ${emotions[emotion] * 100}%, 
+                        #ddd 100%)` 
+                      }}
+                    />
+                  </div>
+                ))}
+              </SliderWrapper>
             </RadarWrapper>
-          </InputContainer>
+            <SaveButton onClick={handleSaveEmotions}>감정 기록 저장</SaveButton>
+          </RightInputContainer>
         </ContentWrapper>
       </LogContainer>
     </Container>
@@ -197,10 +241,10 @@ const Container = styled.div`
 `;
 
 const LogContainer = styled.div`
-  width: 88.54%;  // 1700px 기준의 88.54% (1920 * 0.8854 = 1700)
+  width: 88%;
   height: 75vh;
-  padding: 2.08%;  // 40px 기준의 2.08% (1920 * 0.0208 = 40)
-  background: rgba(255, 251, 233, 0.80);
+  padding: 30px;
+  background: rgba(250, 250, 253, 0.7);
   border-radius: 50px;
   display: flex;
   flex-direction: column;
@@ -214,27 +258,45 @@ const ContentWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  height: fit-content;
 `;
 
 const CalendarContainer = styled.div`
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const InputContainer = styled.div`
-  flex: 1;
+  width: 740px;
+  height: 600px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 20px;
+  padding-bottom: 50px;
+`;
+
+const LeftInputContainer = styled.div`
+  flex: 1;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  gap: 15px;
+`;
+
+const RightInputContainer = styled.div`
+  width: 740px;
+  height: 600px;
+  gap: 23px;
+  padding-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 `;
 
 const Label = styled.label`
   display: flex;
   flex-direction: column;
-  font-size: 0.83vw;  // 16px 기준의 0.83vw (1920 * 0.0083 = 16)
+  font-size: 0.83vw;
 `;
 
 const StyledCalendar = styled(Calendar)`
@@ -260,32 +322,71 @@ const StyledCalendar = styled(Calendar)`
   }
 
   .react-calendar__tile--now {
-    background: #ccffcc !important;
+    background: #4c4c4c !important;
   }
 
   .react-calendar__tile--neighboringMonth {
     visibility: hidden !important;
   }
+  margin-top: 50px;
+  margin-bottom: 1dvb;
+  border-radius: 12px;
+  border-color: transparent;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
 
 const Button = styled.button`
-  padding: 0.73%;  // 14px 기준의 0.73% (1920 * 0.0073 = 14)
+  flex: 1;
+  padding: 10px;
   background: black;
   color: white;
   border: none;
-  border-radius: 0.52%;  // 10px 기준의 0.52% (1920 * 0.0052 = 10)
-  font-size: 1.20vw;  // 23px 기준의 1.20vw (1920 * 0.012 = 23)
+  border-radius: 10px;
+  font-size: 12px;
   font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
+  font-weight: 500;
+
+  &:hover {
+    background-color: #333333;  // Hover 시 배경색
+    color: white;  // Hover 시 글자색
+  }
+`;
+
+const DiaryButton = styled.button`
+  width: 500px;
+  flex: 1;
+  padding: 10px;
+  background: white;
+  color: black;
+  border: none;
+  border-radius: 20px;
+  font-size: 17px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+`;
+
+const SaveButton = styled.button`
+  width: 500px;
+  flex: 1;
+  padding: 12px;
+  background: white;
+  color: black;
+  border: none;
+  border-radius: 20px;
+  font-size: 17px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
   cursor: pointer;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
 
 const DateText = styled.div`
-  width: 37.60%;  // 722px 기준의 37.60% (1920 * 0.376 = 722)
+  width: 37.60%;
   text-align: center;
   color: #3D3D3D;
-  font-size: 1.56vw;  // 30px 기준의 1.56vw (1920 * 0.0156 = 30)
+  font-size: 1.56vw;
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
 `;
@@ -293,29 +394,81 @@ const DateText = styled.div`
 const InputBox = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 0.68%;  // 13px 기준의 0.68% (1920 * 0.0068 = 13)
+  align-items: center;
+  gap: 12px;
   width: 100%;
 `;
 
 const InputTitle = styled.div`
   color: #3D3D3D;
-  font-size: 1.25vw;  // 24px 기준의 1.25vw (1920 * 0.0125 = 24)
+  font-size: 1.25vw;
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
 `;
 
 const InputField = styled.input`
-  width: 100%;
-  height: 2.34%;  // 45px 기준의 2.34% (1920 * 0.0234 = 45)
+  width: 500px;
+  height: 40px;
   background: white;
+  text-align: center;
   border: 1px #CCCCCC solid;
-  border-radius: 0.52%;  // 10px 기준의 0.52% (1920 * 0.0052 = 10)
+  border-radius: 10px;
 `;
 
 const RadarWrapper = styled.div`
-  width: 100%;
+  width: 480px;
+  height: fit-content;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 20px;
 `;
+
+const SliderWrapper = styled.div`
+  font-size: 11px;
+  font-family: 'Avenir', sans-serif;
+  font-weight: 500;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);  // 2열로 배치
+  grid-gap: 10px;  // 각 항목 간의 간격
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  label {
+    font-weight: bold;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    margin: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #ddd;
+    border-radius: 3px;
+    height: 8px;
+    cursor: pointer;
+    outline: none;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 9.5px;
+      height: 9.5px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
+    }
+  }
+`;
+
+const emotionColors = {
+  Joy: '#feed9f',
+  Sadness: '#92abd6',
+  Fear: '#cfc9f3',
+  Disgust: '#acdcc1',
+  Anger: '#c66060',
+  Surprise: '#edbfc8'
+};
