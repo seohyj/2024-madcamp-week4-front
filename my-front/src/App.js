@@ -15,7 +15,7 @@ import Login from './pages/Login'; // Login 경로 수정
 import Logout from './pages/Logout'; // Logout 경로 수정
 import KakaoCallback from './KakaoCallback'; // KakaoCallback 페이지 추가
 
-const logo = '/logo192.png';
+//const logo = '/logo192.png';
 
 function App() {
   return (
@@ -23,7 +23,6 @@ function App() {
       <ScrollToTop />
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           <nav>
             <ul>
               <li><Link to="/">Main</Link></li>

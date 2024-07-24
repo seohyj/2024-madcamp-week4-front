@@ -9,7 +9,7 @@ const words = texts.flatMap(text =>
 ).filter(word => word.text !== word.color);
 
 // 16개의 기호 이미지 파일들을 가져옵니다.
-const symbols = Array.from({ length: 16 }, (_, index) => require(`../../assets/symbol_${index + 1}.png`));
+const symbols = Array.from({ length: 16 }, (_, index) => require(`../../assets/symbols/symbol_${index + 1}.png`));
 
 function Frontal() {
   const [currentWord, setCurrentWord] = useState([]);
