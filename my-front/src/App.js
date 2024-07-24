@@ -16,50 +16,44 @@ import KakaoCallback from './KakaoCallback';
 
 const logo = '/logo192.png';
 
-function Header() {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    // 로컬 저장소에서 kakaoId 삭제
-    localStorage.removeItem('kakaoId');
-  
-    // 카카오 로그아웃 API 호출
-    const clientId = '43981b4342c384f0da37c5299cf17d88'; // 여기에 클라이언트 ID를 입력하세요
-    const redirectUri = 'http://localhost:3000/login'; // 로그아웃 후 리디렉션할 URL
-    const kakaoLogoutUrl = `https://kauth.kakao.com/oauth/logout?client_id=${clientId}&logout_redirect_uri=${redirectUri}`;
-    window.location.href = kakaoLogoutUrl;
-  };
-  return (
-    <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <nav>
-        <ul>
-          <li><Link to="/main">Main</Link></li>
-          <li><button onClick={handleLogout}>Logout</button></li>
-        </ul>
-      </nav>
-    </header>
-  );
-}
-
 function App() {
   return (
     <Router>
       <ScrollToTop />
       <div className="App">
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/main" element={<><Header /><Main /></>} />
-          <Route path="/mylog" element={<><Header /><MyLog /></>} />
-          <Route path="/writediary" element={<><Header /><WriteDiary /></>} />
-          <Route path="/brain/amygd" element={<><Header /><Amygd /></>} />
-          <Route path="/brain/basal" element={<><Header /><Basal /></>} />
-          <Route path="/brain/frontal" element={<><Header /><Frontal /></>} />
-          <Route path="/brain/hippo" element={<><Header /><Hippo /></>} />
-          <Route path="/brain/medial" element={<><Header /><Medial /></>} />
-          <Route path="/user/kakao/callback" element={<KakaoCallback />} />
-        </Routes>
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <nav>
+            <ul>
+              <li><Link to="/">Main</Link></li>
+              <li><Link to="/main">Main</Link></li> {/* Main 링크 추가 */}
+              <li><Link to="/mylog">My Log</Link></li>
+              <li><Link to="/brain/amygd">Amygdala</Link></li>
+              <li><Link to="/brain/basal">Basal</Link></li>
+              <li><Link to="/brain/frontal">Frontal</Link></li>
+              <li><Link to="/brain/hippo">Hippocampus</Link></li>
+              <li><Link to="/brain/medial">Medial</Link></li>
+              <li><Link to="/login">Login</Link></li> {/* Login 링크 추가 */}
+              <li><Link to="/logout">Logout</Link></li> {/* Logout 링크 추가 */}
+            </ul>
+          </nav>
+        </header>
+        <main>
+          <Routes>
+            <Route path="/" element={<Main />} />
+            <Route path="/main" element={<Main />} /> {/* Main 라우트 추가 */}
+            <Route path="/mylog" element={<MyLog />} />
+            <Route path="/writediary" element={<WriteDiary />} />
+            <Route path="/brain/amygd" element={<Amygd />} />
+            <Route path="/brain/basal" element={<Basal />} />
+            <Route path="/brain/frontal" element={<Frontal />} />
+            <Route path="/brain/hippo" element={<Hippo />} />
+            <Route path="/brain/medial" element={<Medial />} />
+            <Route path="/login" element={<Login />} /> {/* Login 라우트 추가 */}
+            <Route path="/logout" element={<Logout />} /> {/* Logout 라우트 추가 */}
+            <Route path="/user/kakao/callback" element={<KakaoCallback />} /> {/* KakaoCallback 라우트 추가 */}
+          </Routes>
+        </main>
       </div>
     </Router>
   );

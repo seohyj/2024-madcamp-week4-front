@@ -1,7 +1,20 @@
 // src/pages/Main.js
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './Main.css';
+import styled from 'styled-components';
+import './Main.css'; // CSS 파일을 가져옵니다.
+
+import backgroundImage from '../assets/UI_images/MyLog.png';
+import brainImage from '../assets/buttons/Pink brain.png';
+import basalImage from '../assets/buttons/basal.png';
+import amygdImage from '../assets/buttons/amygl.png';
+import hippoImage from '../assets/buttons/hippo.png';
+import frontalImage from '../assets/buttons/frontal.png';
+import medialImage from '../assets/buttons/medial.png';
+
+
+import Header from '../components/Header';
+
 
 function Main() {
   const [kakaoId, setKakaoId] = useState(null);
@@ -16,22 +29,79 @@ function Main() {
     }
   }, [navigate]);
 
+  const handleLogout = () => {
+    localStorage.removeItem('kakaoId');
+    setKakaoId(null);
+    navigate('/login');
+  };
+
   return (
     <div className="main-container">
-      
-      <main>
-        <h1>Main Page</h1>
-        <ul>
-          <li><Link to="/mylog">My Log</Link></li>
-          <li><Link to="/brain/frontal">Frontal Lobe</Link></li>
-          <li><Link to="/brain/hippo">Hippocampus</Link></li>
-          <li><Link to="/brain/amygd">Amygdaloid</Link></li>
-          <li><Link to="/brain/basal">Basal Ganglia</Link></li>
-          <li><Link to="/brain/medial">Medial</Link></li>
-        </ul>
-      </main>
+      <Container>
+        <Header handleLogout={handleLogout} />
+        <LinkBox to="/mylog" className="brain-position">
+          <img src={brainImage} alt="Brain" />
+        </LinkBox>
+        <LinkBox to="/brain/basal" className="basal-ganglia">
+          <img src={basalImage} alt="Basal Ganglia" />
+        </LinkBox>
+        <LinkBox to="/brain/amygd" className="amygdala">
+          <img src={amygdImage} alt="Amygdala" />
+        </LinkBox>
+        <LinkBox to="/brain/hippo" className="hippo">
+          <img src={hippoImage} alt="Hippocampus" />
+        </LinkBox>
+        <LinkBox to="/brain/frontal" className="frontal-lobe">
+          <img src={frontalImage} alt="Frontal Lobe" />
+        </LinkBox>
+        <LinkBox to="/brain/medial" className="medial">
+          <img src={medialImage} alt="medial" />
+        </LinkBox>
+      </Container>
     </div>
   );
+  /*return (
+    <div className="main-container">
+      <header>
+        <nav>
+          <ul>
+            {kakaoId ? (
+              <li>
+                <button onClick={handleLogout}>Logout</button>
+              </li>
+            ) : (
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
+            )}
+          </ul>
+        </nav>
+      </header>
+      <div className="link-box">
+        <Link to="/mylog">My Log</Link>
+      </div>
+      <div className="link-box">
+        <Link to="/brain/frontal">Frontal Lobe</Link>
+      </div>
+      <div className="link-row">
+        <div className="link-box">
+          <Link to="/brain/hippo">Hippocampus</Link>
+        </div>
+        <div className="link-box">
+          <Link to="/brain/amygd">Amygdaloid</Link>
+        </div>
+      </div>
+      <div className="link-row">
+        <div className="link-box">
+          <Link to="/brain/hippo">Hippocampus</Link>
+        </div>
+        <div className="link-box">
+          <Link to="/brain/basal">Basal Ganglia</Link>
+        </div>
+      </div>
+    </div>
+  );*/
+
 }
 
 export default Main;
