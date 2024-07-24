@@ -102,7 +102,7 @@ const TextContainer = styled.div`
 const Title = styled.div`
   text-align: center;
   color: black;
-  font-size: 65px;
+  font-size: 55px;
   font-family: 'Avenir', sans-serif;
   font-weight: 900;
   word-wrap: break-word;
@@ -112,7 +112,7 @@ const Title = styled.div`
 const Subtitle = styled.div`
   text-align: center;
   color: black;
-  font-size: 45px;
+  font-size: 35px;
   font-family: 'Avenir', sans-serif;
   font-weight: 300;
   word-wrap: break-word;

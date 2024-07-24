@@ -86,7 +86,6 @@ function MyLog() {
     }
   };
 
-
   const fetchEmotionsData = async (kakaoId, selectedDate) => {
     try {
       const emotionsResponse = await axios.get(`http://localhost:3001/user-mylog/${kakaoId}/${selectedDate}/emotions`);
