@@ -9,15 +9,6 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (window.Kakao) {
-      if (!window.Kakao.isInitialized()) {
-        window.Kakao.init('28536f52ecf147bcad7e4f6d79f83ced'); // 실제 발급받은 JavaScript 키로 변경
-        console.log('Kakao SDK initialized');
-      }
-    } else {
-      console.error('Kakao SDK가 로드되지 않았습니다.');
-    }
-
     const kakaoId = localStorage.getItem('kakaoId');
     if (kakaoId) {
       setIsLoggedIn(true);

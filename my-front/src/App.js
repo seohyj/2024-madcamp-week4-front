@@ -20,10 +20,15 @@ function Header() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    // 로컬 저장소에서 kakaoId 삭제
     localStorage.removeItem('kakaoId');
-    navigate('/login');
+  
+    // 카카오 로그아웃 API 호출
+    const clientId = '43981b4342c384f0da37c5299cf17d88'; // 여기에 클라이언트 ID를 입력하세요
+    const redirectUri = 'http://localhost:3000/login'; // 로그아웃 후 리디렉션할 URL
+    const kakaoLogoutUrl = `https://kauth.kakao.com/oauth/logout?client_id=${clientId}&logout_redirect_uri=${redirectUri}`;
+    window.location.href = kakaoLogoutUrl;
   };
-
   return (
     <header className="App-header">
       <img src={logo} className="App-logo" alt="logo" />

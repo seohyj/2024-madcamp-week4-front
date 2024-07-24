@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -8,6 +8,7 @@ import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler,
 import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import moment from 'moment-timezone';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -91,10 +92,25 @@ function MyLog() {
     Anger: 0,
     Surprise: 0
   });
-
+  const [nickname, setNickname] = useState('');
+  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
 
-  const userId = 1; // 실제 사용자 ID를 가져와야 합니다
+  useEffect(() => {
+    const storedUserId = localStorage.getItem('kakaoId');
+    if (storedUserId) {
+      setUserId(storedUserId);
+      axios.get(`http://localhost:3001/user/kakao/nickname?kakao_id=${storedUserId}`)
+        .then(response => {
+          setNickname(response.data.nickname);
+        })
+        .catch(error => {
+          console.error('There was an error fetching the nickname!', error);
+        });
+    } else {
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const onChange = date => {
     setDate(date);
@@ -144,29 +160,31 @@ function MyLog() {
     onClick: (event, elements) => handleClick(event, elements)
   };
 
-  // wake-time 기록
-  const handleRecordWakeTime = async() => {
-    const currentTume = new Date().toISOString();
-    const today = new Date().toISOString().split('T')[0]; //YYYY-MM-DD 형식으로 오늘 날짜 구하기
+  const handleRecordWakeTime = async () => {
+    const selectedTime = wakeTime;
+  const kstTime = moment(selectedTime).tz('Asia/Seoul').toISOString();
 
+  const selectedDate = moment(date).tz('Asia/Seoul').format('YYYY-MM-DD');
+  
     try {
-      const response = await axios.put(`http://localhost:3001/user-mylog/${userId}/${today}/wake-time`, {
-        wake_time: currentTume,
+      const response = await axios.put(`http://localhost:3001/user-mylog/${userId}/${selectedDate}/wake-time`, {
+        wake_time: kstTime,
       });
       console.log('기상 시각 기록 성공:', response.data);
     } catch (error) {
       console.error('기상 시각 기록 실패:', error);
     }
   };
+  
+  const handleRecordSleepTime = async () => {
+    const selectedTime = bedTime;
+  const kstTime = moment(selectedTime).tz('Asia/Seoul').toISOString();
 
-  // sleep-time 기록
-  const handleRecordSleepTime = async() => {
-    const currentTume = new Date().toISOString();
-    const today = new Date().toISOString().split('T')[0]; //YYYY-MM-DD 형식으로 오늘 날짜 구하기
-
+  const selectedDate = moment(date).tz('Asia/Seoul').format('YYYY-MM-DD');
+  
     try {
-      const response = await axios.put(`http://localhost:3001/user-mylog/${userId}/${today}/sleep-time`, {
-        sleep_time: currentTume,
+      const response = await axios.put(`http://localhost:3001/user-mylog/${userId}/${selectedDate}/sleep-time`, {
+        sleep_time: kstTime,
       });
       console.log('수면 시각 기록 성공:', response.data);
     } catch (error) {
@@ -177,7 +195,7 @@ function MyLog() {
   return (
     <LogContainer>
       <CalendarContainer>
-        <h1>My Log Page</h1>
+        <h1>{nickname ? `${nickname} 님의 Log Page` : 'Loading...'}</h1>
         <p>여기에 로그 내용이 표시됩니다.</p>
         <StyledCalendar
           onChange={onChange}
