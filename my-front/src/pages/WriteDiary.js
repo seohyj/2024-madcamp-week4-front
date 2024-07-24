@@ -108,7 +108,7 @@ function WriteDiary() {
 
   return (
     <Container>
-      <Header handleLogout={() => { localStorage.removeItem('kakaoId'); navigate('/login'); }} />
+      <Header /*handleLogout={() => { localStorage.removeItem('kakaoId'); navigate('/login'); }}*/ />
       <DiaryContainer>
         <DateText>{date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}</DateText>
         <ContentWrapper>

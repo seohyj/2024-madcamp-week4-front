@@ -65,7 +65,7 @@ function MyLog() {
     const kstTime = moment(selectedTime).tz('Asia/Seoul').toISOString();
     const selectedDate = moment(date).tz('Asia/Seoul').format('YYYY-MM-DD');
     try {
-      const response = await axios.put(`http://localhost:3001/user-mylog/${userId}/${selectedDate}/wake-time`, {
+      const response = await axios.put(`http://localhost:3001/user-mylog/${kakaoId}/${selectedDate}/wake-time`, {
         wake_time: kstTime,
       });
       console.log('기상 시각 기록 성공:', response.data);
@@ -81,7 +81,7 @@ function MyLog() {
     const kstTime = moment(selectedTime).tz('Asia/Seoul').toISOString();
     const selectedDate = moment(date).tz('Asia/Seoul').format('YYYY-MM-DD');
     try {
-      const response = await axios.put(`http://localhost:3001/user-mylog/${userId}/${selectedDate}/sleep-time`, {
+      const response = await axios.put(`http://localhost:3001/user-mylog/${kakaoId}/${selectedDate}/sleep-time`, {
         sleep_time: kstTime,
       });
       console.log('수면 시각 기록 성공:', response.data);
@@ -150,7 +150,7 @@ function MyLog() {
 
   return (
     <Container>
-      <Header handleLogout={() => { localStorage.removeItem('kakaoId'); navigate('/login'); }} />
+      <Header /*handleLogout={() => { localStorage.removeItem('kakaoId'); navigate('/login'); }}*/ />
       
       <LogContainer>
         <DateText>{formatDate(date)}</DateText>
