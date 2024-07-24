@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Main.css'; // CSS 파일을 가져옵니다.
+import styled from 'styled-components';
 
 import backgroundImage from '../assets/UI_images/MyLog.png';
 import brainImage from '../assets/buttons/Pink brain.png';
@@ -65,7 +66,6 @@ export default Main;
 
 // Styled components
 
-import styled from 'styled-components';
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
