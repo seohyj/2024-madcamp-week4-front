@@ -24,7 +24,7 @@ function WriteDiary() {
     if (storedKakaoId) {
       setKakaoId(storedKakaoId);
     } else {
-      navigate('/login'); // 사용자 ID가 없는 경우 로그인 페이지로 리디렉션
+      // navigate('/login'); // 사용자 ID가 없는 경우 로그인 페이지로 리디렉션
     }
   }, [navigate]);
 
@@ -113,12 +113,15 @@ function WriteDiary() {
         <DateText>{date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}</DateText>
         <ContentWrapper>
           <CalendarWrapper>
+            {/* Calendar 컴포넌트 (날짜가 변경되면 setDate 함수 호출) */}
             <StyledCalendar onChange={setDate} value={date} />
           </CalendarWrapper>
           <Form onSubmit={handleSubmit}>
             <Label>제목</Label>
+            {/* 제목 입력 필드 (수정 모드가 아니고 기존 항목일 경우 비활성화) */}
             <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required disabled={!isEditing && isExisting} />
             <Label>내용</Label>
+            {/* 내용 입력 텍스트 영역 (수정 모드가 아니고 기존 항목일 경우 비활성화) */}
             <TextArea 
               value={context} 
               onChange={(e) => setContext(e.target.value)} 
