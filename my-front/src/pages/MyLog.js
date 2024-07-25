@@ -67,12 +67,12 @@ function MyLog() {
 
   // wake-time 기록
   const handleRecordWakeTime = async () => {
-    const selectedTime = wakeTime;
-    const kstTime = moment(selectedTime).tz('Asia/Seoul').toISOString();
-    const selectedDate = moment(date).tz('Asia/Seoul').format('YYYY-MM-DD');
+    const selectedTime = moment(wakeTime, 'hh:mm A').format('HH:mm:ss'); // 선택된 시간을 24시간 형식으로 변환
+    const selectedDate = moment(date).format('YYYY-MM-DD'); // 날짜를 YYYY-MM-DD 형식으로 변환
+    const combinedDateTime = moment.tz(`${selectedDate} ${selectedTime}`, 'YYYY-MM-DD HH:mm:ss', 'Asia/Seoul').toISOString(); // 날짜와 시간을 결합하고 KST로 변환
     try {
       const response = await axios.put(`http://localhost:3001/user-mylog/${kakaoId}/${selectedDate}/wake-time`, {
-        wake_time: kstTime,
+        wake_time: combinedDateTime,
       });
       console.log('기상 시각 기록 성공:', response.data);
     } catch (error) {
@@ -83,12 +83,12 @@ function MyLog() {
 
   // sleep-time 기록
   const handleRecordSleepTime = async () => {
-    const selectedTime = sleepTime;
-    const kstTime = moment(selectedTime).tz('Asia/Seoul').toISOString();
-    const selectedDate = moment(date).tz('Asia/Seoul').format('YYYY-MM-DD');
+    const selectedTime = moment(sleepTime).format('HH:mm:ss'); // 선택된 시간을 24시간 형식으로 변환
+  const selectedDate = moment(date).format('YYYY-MM-DD'); // 날짜를 YYYY-MM-DD 형식으로 변환
+  const combinedDateTime = moment(`${selectedDate} ${selectedTime}`).tz('Asia/Seoul').toISOString(); // 날짜와 시간을 결합하고 KST로 변환
     try {
       const response = await axios.put(`http://localhost:3001/user-mylog/${kakaoId}/${selectedDate}/sleep-time`, {
-        sleep_time: kstTime,
+        sleep_time: combinedDateTime,
       });
       console.log('수면 시각 기록 성공:', response.data);
     } catch (error) {

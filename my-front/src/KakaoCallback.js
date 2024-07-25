@@ -8,15 +8,19 @@ function KakaoCallback() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
+    console.log(`Received authorization code: ${code}`);
 
     if (code && !hasFetched) { // 이미 요청을 보낸 적이 있는지 확인
+      
       setHasFetched(true); // 요청을 보냈음을 상태에 저장
+      console.log(`Sending fetch request to: http://localhost:3001/user/kakao/callback?code=${code}`); // fetch 요청 로그 추가
       fetch(`http://localhost:3001/user/kakao/callback?code=${code}`, {
         method: 'GET',
         credentials: 'include'
       })
         .then(response => response.json())
         .then(data => {
+          console.log(`Response from backend: ${JSON.stringify(data)}`); // 백엔드 응답 로그 추가
           if (data.kakaoId) {
             localStorage.setItem('kakaoId', data.kakaoId);
             navigate('/main');
