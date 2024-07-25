@@ -32,6 +32,12 @@ function MyLog() {
     Anger: 0,
     Surprise: 0
   });
+
+  // 감정 데이터 존재 여부 상태 관리
+  const [isExisting, setIsExisting] = useState(false);
+  // 수정 모드 상태 관리
+  const [isEditing, setIsEditing] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,7 +52,7 @@ function MyLog() {
           console.error('There was an error fetching the nickname!', error);
         });
     } else {
-      navigate('/login');
+      // navigate('/login');
     }
   }, [navigate]);
 
@@ -61,12 +67,12 @@ function MyLog() {
 
   // wake-time 기록
   const handleRecordWakeTime = async () => {
-    const selectedTime = wakeTime;
-    const kstTime = moment(selectedTime).tz('Asia/Seoul').toISOString();
-    const selectedDate = moment(date).tz('Asia/Seoul').format('YYYY-MM-DD');
+    const selectedTime = moment(wakeTime, 'hh:mm A').format('HH:mm:ss'); // 선택된 시간을 24시간 형식으로 변환
+    const selectedDate = moment(date).format('YYYY-MM-DD'); // 날짜를 YYYY-MM-DD 형식으로 변환
+    const combinedDateTime = moment.tz(`${selectedDate} ${selectedTime}`, 'YYYY-MM-DD HH:mm:ss', 'Asia/Seoul').toISOString(); // 날짜와 시간을 결합하고 KST로 변환
     try {
       const response = await axios.put(`http://localhost:3001/user-mylog/${kakaoId}/${selectedDate}/wake-time`, {
-        wake_time: kstTime,
+        wake_time: combinedDateTime,
       });
       console.log('기상 시각 기록 성공:', response.data);
     } catch (error) {
@@ -77,12 +83,12 @@ function MyLog() {
 
   // sleep-time 기록
   const handleRecordSleepTime = async () => {
-    const selectedTime = sleepTime;
-    const kstTime = moment(selectedTime).tz('Asia/Seoul').toISOString();
-    const selectedDate = moment(date).tz('Asia/Seoul').format('YYYY-MM-DD');
+    const selectedTime = moment(sleepTime).format('HH:mm:ss'); // 선택된 시간을 24시간 형식으로 변환
+  const selectedDate = moment(date).format('YYYY-MM-DD'); // 날짜를 YYYY-MM-DD 형식으로 변환
+  const combinedDateTime = moment(`${selectedDate} ${selectedTime}`).tz('Asia/Seoul').toISOString(); // 날짜와 시간을 결합하고 KST로 변환
     try {
       const response = await axios.put(`http://localhost:3001/user-mylog/${kakaoId}/${selectedDate}/sleep-time`, {
-        sleep_time: kstTime,
+        sleep_time: combinedDateTime,
       });
       console.log('수면 시각 기록 성공:', response.data);
     } catch (error) {
@@ -93,37 +99,99 @@ function MyLog() {
 
   const fetchEmotionsData = async (kakaoId, selectedDate) => {
     try {
-      const emotionsResponse = await axios.get(`http://localhost:3001/user-mylog/${kakaoId}/${selectedDate}/emotions`);
-      setEmotions(emotionsResponse.data);
+      // 서버에서 감정 데이터를 가져옵니다.
+      const emotionsResponse = await axios.get(`http://localhost:3001/user-mylog/${kakaoId}/${selectedDate}/emotion`);
+      if (emotionsResponse.data) {
+        // 감정 데이터가 있으면 상태를 업데이트합니다.
+        setEmotions(emotionsResponse.data);
+        setIsExisting(true);
+      } else {
+        // 감정 데이터가 없으면 기본값으로 설정합니다.
+        setEmotions({
+          Joy: 0.2,
+          Sadness: 0.4,
+          Fear: 0.6,
+          Disgust: 0.8,
+          Anger: 1.0,
+          Surprise: 1.0
+        });
+        setIsExisting(false);
+      }
     } catch (error) {
+      // 에러가 발생하면 기본값으로 설정합니다.
       console.error('Failed to fetch emotions data:', error);
+      setEmotions({
+        Joy: 0.5,
+        Sadness: 0.5,
+        Fear: 0.5,
+        Disgust: 0.5,
+        Anger: 0.5,
+        Surprise: 0.5
+      });
+      setIsExisting(false);
     }
   };
 
-  // Handle slider change
-  const handleSliderChange = (emotion, value) => {
-    setEmotions((prevEmotions) => ({
-      ...prevEmotions,
-      [emotion]: value
-    }));
-  };
+  // 슬라이더 값 변경 시 호출되는 함수입니다.
+const handleSliderChange = (emotion, value) => {
+  console.log(`Changing ${emotion} to ${value}`);
+  setEmotions((prevEmotions) => ({
+    ...prevEmotions,
+    [emotion]: value
+  }));
+  console.log('Updated emotions:', { ...emotions, [emotion]: value });
+};
 
-  // Save emotions to the server
+  // 감정을 서버에 저장하는 함수입니다.
   const handleSaveEmotions = async () => {
     const requestData = {
-      ...emotions,
-      kakao_id: kakaoId,
-      date: date.toISOString().split('T')[0]
+      hex_happy: emotions.Joy,
+      hex_sad: emotions.Sadness,
+      hex_anger: emotions.Anger,
+      hex_fear: emotions.Fear,
+      hex_surprise: emotions.Surprise,
+      hex_disgust: emotions.Disgust
     };
+    // 선택된 날짜를 Asia/Seoul 시간대로 포맷합니다.
+    const selectedDate = moment(date).tz('Asia/Seoul').format('YYYY-MM-DD');
 
     try {
-      const response = await axios.put(`http://localhost:3001/user-mylog/${kakaoId}/${date.toISOString().split('T')[0]}/emotions`, requestData);
+      // 감정 데이터가 이미 존재하면 PUT 요청, 그렇지 않으면 POST 요청을 보냅니다.
+      const url = isExisting 
+        ? `http://localhost:3001/user-mylog/${kakaoId}/${selectedDate}/emotion`
+        : `http://localhost:3001/user-mylog/emotion`;
+      const method = isExisting ? 'put' : 'post';
+
+      // URL과 요청 데이터를 콘솔에 출력
+    console.log('Request URL:', url);
+    console.log('Request Data:', {
+      kakao_id: kakaoId,
+      date: selectedDate,
+      ...requestData
+    });
+
+      const response = await axios({
+        method: method,
+        url: url,
+        data: {
+          kakao_id: kakaoId,
+          date: selectedDate,
+          ...requestData
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       console.log('Emotions saved successfully:', response.data);
+      alert('감정이 저장되었습니다!');
+      setIsEditing(false); // 수정 모드 종료
+      if (!isExisting) setIsExisting(true);
     } catch (error) {
       console.error('Failed to save emotions:', error);
     }
   };
 
+  // 레이더 차트 데이터입니다.
   const radarData = {
     labels: ['Joy', 'Sadness', 'Fear', 'Disgust', 'Anger', 'Surprise'],
     datasets: [
@@ -136,7 +204,7 @@ function MyLog() {
       }
     ]
   };
-  
+  // 레이더 차트 옵션입니다.
   const radarOptions = {
     scale: {
       ticks: {
@@ -150,18 +218,21 @@ function MyLog() {
 
   return (
     <Container>
-      <Header /*handleLogout={() => { localStorage.removeItem('kakaoId'); navigate('/login'); }}*/ />
+      <Header />
       
       <LogContainer>
+        {/* 날짜를 포맷하여 표시합니다. */}
         <DateText>{formatDate(date)}</DateText>
         <ContentWrapper>
           <CalendarContainer>
+            {/* 달력 컴포넌트를 사용하여 날짜를 선택할 수 있습니다. */}
             <StyledCalendar
               onChange={setDate}
               value={date}
             />
             <LeftInputContainer>
               <InputBox>
+              {/* 오늘의 기상 시각 입력 섹션 */}
                 <InputTitle>오늘의 기상 시각</InputTitle>
                 <DatePicker 
                   selected={wakeTime} 
@@ -173,9 +244,10 @@ function MyLog() {
                   dateFormat="h:mm aa" 
                   customInput={<InputField />} 
                 />
-                <Button onClick={handleRecordWakeTime}>기상 시각 기록</Button>
+                <Button onClick={handleRecordWakeTime}>기상시각 기록</Button>
               </InputBox>
               <InputBox>
+              {/* 어젯밤의 취침 시각 입력 섹션 */}
                 <InputTitle>어젯밤의 취침 시각</InputTitle>
                 <DatePicker
                   selected={sleepTime}
@@ -187,15 +259,18 @@ function MyLog() {
                   dateFormat="h:mm aa"
                   customInput={<InputField />}
                 />
-                <Button onClick={handleRecordSleepTime}>취침 시각 기록</Button>
+                <Button onClick={handleRecordSleepTime}>취침시각 기록</Button>
               </InputBox>
+               {/* 일기 쓰기 버튼 */}
               <DiaryButton onClick={() => navigate('/writediary')}>일기 쓰기</DiaryButton>
             </LeftInputContainer>
           </CalendarContainer>
           <RightInputContainer>
             <RadarWrapper>
+              {/* 레이더 차트를 표시합니다. */}
               <Radar data={radarData} options={radarOptions} />
               <SliderWrapper>
+                {/* 감정을 조정할 수 있는 슬라이더를 생성합니다. */}
                 {Object.keys(emotions).map((emotion) => (
                   <div key={emotion}>
                     <label>{emotion}</label>
@@ -213,12 +288,19 @@ function MyLog() {
                         #ddd ${emotions[emotion] * 100}%, 
                         #ddd 100%)` 
                       }}
+                      //disabled={!isEditing}
+                      required disabled={!isEditing && isExisting}////제일 중요!!! 상태활성화 조건!!!
                     />
                   </div>
                 ))}
               </SliderWrapper>
             </RadarWrapper>
-            <SaveButton onClick={handleSaveEmotions}>감정 기록 저장</SaveButton>
+            {/* 감정 기록 저장 및 수정 버튼 */}
+            {isExisting && !isEditing ? (
+              <SaveButton type="button" onClick={() => setIsEditing(true)}>감정 기록 수정</SaveButton>
+            ) : (
+              <SaveButton onClick={handleSaveEmotions}>감정 기록 저장</SaveButton>
+            )}
           </RightInputContainer>
         </ContentWrapper>
       </LogContainer>
