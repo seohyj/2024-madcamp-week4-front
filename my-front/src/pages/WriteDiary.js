@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
+import moment from 'moment';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
@@ -15,60 +15,76 @@ function WriteDiary() {
   const [context, setContext] = useState('');
   const [date, setDate] = useState(new Date());
   const [isExisting, setIsExisting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // 새로 추가된 상태: 수정 모드인지 여부
   const [kakaoId, setKakaoId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedKakaoId = localStorage.getItem('kakaoId');
-    if (!storedKakaoId) {
-      //navigate('/login');
-    } else {
+    const storedKakaoId = localStorage.getItem('kakaoId');// 수정된 부분: localStorage에서 'kakaoId'를 가져옴
+    if (storedKakaoId) {
       setKakaoId(storedKakaoId);
+    } else {
+      navigate('/login'); // 사용자 ID가 없는 경우 로그인 페이지로 리디렉션
     }
   }, [navigate]);
 
   useEffect(() => {
-    if (date) {
+    if (kakaoId && date) {
       fetchDiary();
     }
-  }, [date]);
+  }, [kakaoId, date]);
+
 
   const fetchDiary = async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/user-mylog/${kakaoId}/${date.toISOString().split('T')[0]}`);
+      const formattedDate = moment(date).format('YYYY-MM-DD');
+      const response = await axios.get(`http://localhost:3001/user-mylog/${kakaoId}/${formattedDate}`);
+      console.log('Fetching diary with URL:', `http://localhost:3001/user-mylog/${kakaoId}/${formattedDate}`);
+      console.log('Fetched diary data:', response.data); // 디버깅을 위한 콘솔 출력
       if (response.data) {
         setTitle(response.data.title);
         setContext(response.data.context);
         setIsExisting(true);
+        console.log('Setting title:', response.data.title); // 추가 로그
+        console.log('Setting context:', response.data.context); // 추가 로그
       } else {
         setTitle('');
         setContext('');
         setIsExisting(false);
       }
     } catch (error) {
-      console.error('일기 불러오기 실패:', error);
+      console.error('일기 불러오기 실패:', error.response ? error.response.data : error.message);
       setTitle('');
       setContext('');
       setIsExisting(false);
     }
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url = isExisting
-        ? `http://localhost:3001/user-mylog/${kakaoId}/${date.toISOString().split('T')[0]}`
+      const formattedDate = moment(date).format('YYYY-MM-DD');
+      const url = isExisting 
+        ? `http://localhost:3001/user-mylog/${kakaoId}/${formattedDate}`
         : `http://localhost:3001/user-mylog`;
       const method = isExisting ? 'put' : 'post';
 
+      console.log('Sending request:', { method, url, data: {
+        kakao_id: kakaoId,
+        date: formattedDate,
+        title: title,
+        context: context,
+      }});
+
       const response = await axios({
-        method,
-        url,
+        method: method,
+        url: url,
         data: {
           kakao_id: kakaoId,
-          date: date.toISOString().split('T')[0],
-          title,
-          context,
+          date: formattedDate, // 날짜 형식을 맞추기 위해 moment 라이브러리 사용
+          title: title,
+          context: context,
         },
         headers: {
           'Content-Type': 'application/json',
@@ -78,14 +94,21 @@ function WriteDiary() {
       console.log('일기 저장 성공:', response.data);
       alert('일기가 저장되었습니다!');
       if (!isExisting) setIsExisting(true);
+      setIsEditing(false); // 수정 모드 종료
     } catch (error) {
-      console.error('일기 저장 실패:', error);
+      console.error('일기 저장 실패:', error.response ? error.response.data : error.message);
     }
+  };
+
+  // 수정된 함수: 폼 제출을 방지
+  const handleEdit = (e) => {
+    e.preventDefault();
+    setIsEditing(true);
   };
 
   return (
     <Container>
-      <Header handleLogout={() => { localStorage.removeItem('kakaoId'); navigate('/login'); }} />
+      <Header /*handleLogout={() => { localStorage.removeItem('kakaoId'); navigate('/login'); }}*/ />
       <DiaryContainer>
         <DateText>{date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}</DateText>
         <ContentWrapper>
@@ -94,10 +117,21 @@ function WriteDiary() {
           </CalendarWrapper>
           <Form onSubmit={handleSubmit}>
             <Label>제목</Label>
-            <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+            <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required disabled={!isEditing && isExisting} />
             <Label>내용</Label>
-            <TextArea value={context} onChange={(e) => setContext(e.target.value)} required placeholder="오늘의 일기를 작성하세요..." />
-            <Button type="submit">{isExisting ? '수정' : '저장'}</Button>
+            <TextArea 
+              value={context} 
+              onChange={(e) => setContext(e.target.value)} 
+              placeholder="오늘의 일기를 작성하세요..." 
+              required
+              disabled={!isEditing && isExisting}
+            />
+             {isExisting && !isEditing ? (
+             // 수정된 부분: 버튼 타입을 "button"으로 변경하여 폼 제출을 방지
+             <Button type="button" onClick={handleEdit}>수정</Button>
+             ) : (
+             <Button type="submit">{isExisting ? '저장' : '제출'}</Button>
+             )}
           </Form>
         </ContentWrapper>
       </DiaryContainer>
