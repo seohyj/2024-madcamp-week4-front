@@ -125,8 +125,12 @@ function Frontal() {
   }, [showInitialSymbols, testStarted, testType]);
 
   const totalQuestions = results.length;
-  const correctAnswers = results.reduce((acc, result) => acc + (result.isCorrect ? 1 : 0), 0);
-  const accuracy = totalQuestions > 0 ? (correctAnswers / totalQuestions * 100).toFixed(2) : 0;
+  const correctAnswers = testType === 'stroop'
+  ? results.reduce((acc, result) => acc + (result.isCorrect ? 1 : 0), 0)
+  : results[0]?.isCorrect || 0; // Visual Learning Test에서 정답 개수를 가져옴
+const accuracy = totalQuestions > 0 ? (correctAnswers / (testType === 'stroop' ? totalQuestions : 8) * 100).toFixed(2) : 0;
+  // const correctAnswers = results.reduce((acc, result) => acc + (result.isCorrect ? 1 : 0), 0);
+  // const accuracy = totalQuestions > 0 ? (correctAnswers / totalQuestions * 100).toFixed(2) : 0;
 
   const getDiagnosis = () => {
     if (testType === 'stroop') {
