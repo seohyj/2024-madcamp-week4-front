@@ -1,3 +1,4 @@
+// 내측 측두엽
 import React, { useState } from 'react';
 import axios from 'axios';
 import backgroundImage from '../../assets/UI_images/LoginPage.png'

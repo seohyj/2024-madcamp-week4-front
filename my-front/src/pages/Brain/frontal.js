@@ -124,11 +124,16 @@ function Frontal() {
     return () => clearTimeout(timerId);
   }, [showInitialSymbols, testStarted, testType]);
 
-  const totalQuestions = results.length;
+  
+  const totalQuestions = testType === 'stroop' ? results.length : 8; // Visual Learning Test에서는 8개 기호
   const correctAnswers = testType === 'stroop'
   ? results.reduce((acc, result) => acc + (result.isCorrect ? 1 : 0), 0)
   : results[0]?.isCorrect || 0; // Visual Learning Test에서 정답 개수를 가져옴
-const accuracy = totalQuestions > 0 ? (correctAnswers / (testType === 'stroop' ? totalQuestions : 8) * 100).toFixed(2) : 0;
+  const accuracy = testType === 'stroop'
+  ? (totalQuestions > 0 ? (correctAnswers / totalQuestions * 100).toFixed(2) : 0)
+  : 25;
+  // const accuracy = totalQuestions > 0 ? (correctAnswers / totalQuestions * 100).toFixed(2) : 0;
+  // const totalQuestions = results.length;
   // const correctAnswers = results.reduce((acc, result) => acc + (result.isCorrect ? 1 : 0), 0);
   // const accuracy = totalQuestions > 0 ? (correctAnswers / totalQuestions * 100).toFixed(2) : 0;
 
@@ -144,11 +149,11 @@ const accuracy = totalQuestions > 0 ? (correctAnswers / (testType === 'stroop' ?
         return "치매 (Dementia)";
       }
     } else if (testType === 'visual') {
-      if (accuracy >= 80) {
+      if (accuracy >= 50) {
         return "정상 범위";
-      } else if (accuracy >= 60) {
+      } else if (accuracy >= 25) {
         return "경도 인지 장애 (Mild Cognitive Impairment)";
-      } else if (accuracy >= 40) {
+      } else if (accuracy >= 12.5) {
         return "중등도 인지 장애 (Moderate Cognitive Impairment)";
       } else {
         return "심각한 인지 장애 (Severe Cognitive Impairment)";
@@ -269,10 +274,10 @@ const accuracy = totalQuestions > 0 ? (correctAnswers / (testType === 'stroop' ?
                 <h3>Visuo - Spatial Memory Test</h3>
                 <h3>평가 기준</h3>
                 <ResultContainer>
-                  <DescContainer>정상 범위: 정답률 80% 이상</DescContainer>
-                  <DescContainer>경도 인지 장애 (Mild Cognitive Impairment): 정답률 60% ~ 79%</DescContainer>
-                  <DescContainer>중등도 인지 장애 (Moderate Cognitive Impairment): 정답률 40% ~ 59%</DescContainer>
-                  <DescContainer>심각한 인지 장애 (Severe Cognitive Impairment): 정답률 40% 미만</DescContainer>
+                  <DescContainer>정상 범위: 정답률 50% 이상</DescContainer>
+                  <DescContainer>경도 인지 장애 (Mild Cognitive Impairment): 정답률 50% ~ 25%</DescContainer>
+                  <DescContainer>중등도 인지 장애 (Moderate Cognitive Impairment): 정답률 25% ~ 12.5%</DescContainer>
+                  <DescContainer>심각한 인지 장애 (Severe Cognitive Impairment): 정답률 12.5% 미만</DescContainer>
                 </ResultContainer>
               </div>
             )}
