@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 // 단어 목록과 힌트
 const words = [
     { word: "견책", clue: "잘못이나 옳지 못한 일을 잡아내어 따지고 나무람." },

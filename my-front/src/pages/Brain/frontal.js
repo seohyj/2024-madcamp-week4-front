@@ -9,8 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-import backgroundImage from ''
-import Header from '../components/Header';
+import backgroundImage from '../../assets/UI_images/LoginPage.png'
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
