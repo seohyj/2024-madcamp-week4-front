@@ -1,6 +1,20 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import backgroundImage from '../../assets/UI_images/LoginPage.png'
+import Header from '../../components/Header';
+import styled from 'styled-components';
 
-
+const Container = styled.div`
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  background: linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1)), url(${backgroundImage}) no-repeat center center;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
 // 단어 목록과 힌트
 const words = [
     { word: "견책", clue: "잘못이나 옳지 못한 일을 잡아내어 따지고 나무람." },
@@ -77,7 +91,10 @@ const Crossword = ({ gridSize, onComplete }) => {
     if (grid.length === 0) return <div>로딩 중...</div>;
 
     return (
+      <Container>
+      <Header />
         <div className="crossword">
+        <h1>내측 측두엽 기능진단 테스트</h1>
             <div className="grid">
                 {grid.map((row, rowIndex) => (
                     <React.Fragment key={rowIndex}>
@@ -141,6 +158,7 @@ const Crossword = ({ gridSize, onComplete }) => {
                 }
             `}</style>
         </div>
+      </Container>
     );
 };
 
@@ -158,7 +176,6 @@ const Medial = () => {
 
     return (
         <div>
-            <h1>내측 측두엽 기능진단 테스트</h1>
             <Crossword gridSize={10} onComplete={handleComplete} />
             {result && <div>진단 결과: {result}</div>}
         </div>

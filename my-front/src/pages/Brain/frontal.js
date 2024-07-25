@@ -10,6 +10,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 import backgroundImage from '../../assets/UI_images/LoginPage.png'
+import Header from '../../components/Header';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -162,117 +163,120 @@ function Frontal() {
   };
 
   return (
-    <Container>
-      <div>
-        <h1>Frontal Lobe Page</h1>
-        <p>전두엽</p>
-        {!testStarted && !testComplete && (
-          <>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-            <button onClick={() => handleTestTypeSelection('stroop')}>집행기능 검사</button>
-            <button onClick={() => handleTestTypeSelection('visual')}>작업기억 검사</button>
-            </div>
-          </>
-        )}
-        {testType === 'stroop' && !testStarted && !testComplete && (
-          <>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-            <button onClick={() => setTestStarted(true)}>Start the Stroop-Test</button>
-            </div>
-            <div className="example-buttons">
-              <p>예시 정답 버튼:</p>
-              <button className="button" style={{ backgroundColor: 'green', color: 'white', fontWeight: 'bold' }}>녹색</button>
-              <button className="button" style={{ backgroundColor: 'red', color: 'white', fontWeight: 'bold' }}>빨강</button>
-              <button className="button" style={{ backgroundColor: 'brown', color: 'white', fontWeight: 'bold' }}>갈색</button>
-              <button className="button" style={{ backgroundColor: 'purple', color: 'white', fontWeight: 'bold' }}>보라</button>
-              <button className="button" style={{ backgroundColor: 'orange', color: 'white', fontWeight: 'bold' }}>주황</button>
-              <button className="button" style={{ backgroundColor: 'gray', color: 'white', fontWeight: 'bold' }}>회색</button>
-            </div>
-          </>
-        )}
-        {testType === 'stroop' && testStarted && (
-          <>
-            <div>
-              <p>총 시간: {Math.floor(totalTime / 60)}분 {totalTime % 60}초</p>
-              <p>총 문제: {totalQuestions}개</p>
-              <p>정답률: {accuracy}%</p>
-            </div>
-            <div className="word" style={{ color: currentWord.color, fontSize: '24px', margin: '20px', fontWeight: 'bold' }}>
-              {currentWord.text}
-            </div>
-            <div className="buttons">
-              <button className="button" onClick={() => checkAnswer('green')} style={{ fontWeight: 'bold' }}>녹색</button>
-              <button className="button" onClick={() => checkAnswer('red')} style={{ fontWeight: 'bold' }}>빨강</button>
-              <button className="button" onClick={() => checkAnswer('brown')} style={{ fontWeight: 'bold' }}>갈색</button>
-              <button className="button" onClick={() => checkAnswer('purple')} style={{ fontWeight: 'bold' }}>보라</button>
-              <button className="button" onClick={() => checkAnswer('orange')} style={{ fontWeight: 'bold' }}>주황</button>
-              <button className="button" onClick={() => checkAnswer('gray')} style={{ fontWeight: 'bold' }}>회색</button>
-            </div>
-            <button onClick={stopTest}>Stop the Stroop-Test</button>
-          </>
-        )}
-        {testType === 'visual' && !testStarted && !testComplete &&(
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-          <button onClick={startVisualTest}>Start the Visual Learning Test</button>
-          </div>
-        )}
-        {testType === 'visual' && testStarted &&  (
+    <div>
+      <Container>
+        <Header />
+              <TextContainer>Frontal Lobe Page</TextContainer>
+              <TextContainer>전두엽</TextContainer>
+              {!testStarted && !testComplete && (
+                <>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                  <Button onClick={() => handleTestTypeSelection('stroop')}>집행기능 검사</Button>
+                  <Button onClick={() => handleTestTypeSelection('visual')}>작업기억 검사</Button>
+                  </div>
+                </>
+              )}
+              {testType === 'stroop' && !testStarted && !testComplete && (
+                <>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                  <Button onClick={() => setTestStarted(true)}>Start the Stroop-Test</Button>
+                  </div>
+                  <div className="example-Buttons">
+                    <p>예시 정답 버튼:</p>
+                    <Button className="Button" style={{ backgroundColor: 'green', color: 'white', fontWeight: 'bold' }}>녹색</Button>
+                    <Button className="Button" style={{ backgroundColor: 'red', color: 'white', fontWeight: 'bold' }}>빨강</Button>
+                    <Button className="Button" style={{ backgroundColor: 'brown', color: 'white', fontWeight: 'bold' }}>갈색</Button>
+                    <Button className="Button" style={{ backgroundColor: 'purple', color: 'white', fontWeight: 'bold' }}>보라</Button>
+                    <Button className="Button" style={{ backgroundColor: 'orange', color: 'white', fontWeight: 'bold' }}>주황</Button>
+                    <Button className="Button" style={{ backgroundColor: 'gray', color: 'white', fontWeight: 'bold' }}>회색</Button>
+                  </div>
+                </>
+              )}
+              {testType === 'stroop' && testStarted && (
+                <>
+                  <div>
+                    <p><strong>총 걸린 시간</strong>:  {Math.floor(totalTime / 60)}분 {totalTime % 60}초</p>
+                    <p><strong>총 문제</strong>:   {totalQuestions}개</p>
+                    <p><strong>정답률</strong>:    {accuracy}%</p>
+                  </div>
+                  <div className="word" style={{ color: currentWord.color, fontSize: '24px', margin: '20px', fontWeight: 'bold' }}>
+                    {currentWord.text}
+                  </div>
+                  <div className="Buttons">
+                    <Button className="Button" onClick={() => checkAnswer('green')} style={{ fontWeight: 'bold' }}>녹색</Button>
+                    <Button className="Button" onClick={() => checkAnswer('red')} style={{ fontWeight: 'bold' }}>빨강</Button>
+                    <Button className="Button" onClick={() => checkAnswer('brown')} style={{ fontWeight: 'bold' }}>갈색</Button>
+                    <Button className="Button" onClick={() => checkAnswer('purple')} style={{ fontWeight: 'bold' }}>보라</Button>
+                    <Button className="Button" onClick={() => checkAnswer('orange')} style={{ fontWeight: 'bold' }}>주황</Button>
+                    <Button className="Button" onClick={() => checkAnswer('gray')} style={{ fontWeight: 'bold' }}>회색</Button>
+                  </div>
+                  <StopButton onClick={stopTest}>Stop the Stroop-Test</StopButton>
+                </>
+              )}
+              {testType === 'visual' && !testStarted && !testComplete &&(
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                <Button onClick={startVisualTest}>Start the Visual Learning Test</Button>
+                </div>
+              )}
+              {testType === 'visual' && testStarted &&  (
+                <div>
+                  <h2>Visual Learning Test</h2>
+                  {showInitialSymbols ? (
+                    <div>
+                      {currentWord.map((symbol, index) => (
+                        <img key={index} src={symbol} alt={`symbol_${index + 1}`} style={{ width: '150px', height: '150px', margin: '5px' }} />
+                      ))}
+                    </div>
+                  ) : (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginTop: '20px' }}>
+                      {symbols.map((symbol, index) => (
+                        <img
+                          key={index}
+                          src={symbol}
+                          alt={`symbol_${index + 1}`}
+                          style={{ width: '130px', height: '130px', margin: '5px', border: selectedSymbols.includes(symbol) ? '2px solid blue' : 'none' }}
+                          onClick={() => handleSymbolClick(symbol)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              {testComplete && (
           <div>
-            <h2>Visual Learning Test</h2>
-            {showInitialSymbols ? (
+            <h2>Test Complete</h2>
+            <p><strong>총 걸린 시간</strong>:      {Math.floor(totalTime / 60)}분 {totalTime % 60}초</p>
+            <p><strong>정답률</strong>:       {accuracy}%</p>
+            <p><strong>진단 결과</strong>:      {getDiagnosis()}</p>
+            {testType === 'stroop' && (
               <div>
-                {currentWord.map((symbol, index) => (
-                  <img key={index} src={symbol} alt={`symbol_${index + 1}`} style={{ width: '50px', height: '50px', margin: '5px' }} />
-                ))}
-              </div>
-            ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginTop: '20px' }}>
-                {symbols.map((symbol, index) => (
-                  <img
-                    key={index}
-                    src={symbol}
-                    alt={`symbol_${index + 1}`}
-                    style={{ width: '50px', height: '50px', margin: '5px', border: selectedSymbols.includes(symbol) ? '2px solid blue' : 'none' }}
-                    onClick={() => handleSymbolClick(symbol)}
-                  />
-                ))}
+                <h3>Stroop Test</h3>
+                <h3>평가 기준</h3>
+                <ResultContainer>
+                  <DescContainer>정상 범위: 총 걸린 시간 90초 이내, 정답률 90% 이상</DescContainer>
+                  <DescContainer>주의력 결핍 및 과잉행동 장애 (ADHD): 총 걸린 시간 90초 ~ 135초, 정답률 70% ~ 89%</DescContainer>
+                  <DescContainer>전두엽 손상 (Frontal Lobe Damage): 총 걸린 시간 135초 ~ 180초, 정답률 50% ~ 69%</DescContainer>
+                  <DescContainer>치매 (Dementia): 총 걸린 시간 180초 이상, 정답률 50% 미만</DescContainer>
+                </ResultContainer>
               </div>
             )}
+            {testType === 'visual' && (
+              <div>
+                <h3>Visuo - Spatial Memory Test</h3>
+                <h3>평가 기준</h3>
+                <ResultContainer>
+                  <DescContainer>정상 범위: 정답률 80% 이상</DescContainer>
+                  <DescContainer>경도 인지 장애 (Mild Cognitive Impairment): 정답률 60% ~ 79%</DescContainer>
+                  <DescContainer>중등도 인지 장애 (Moderate Cognitive Impairment): 정답률 40% ~ 59%</DescContainer>
+                  <DescContainer>심각한 인지 장애 (Severe Cognitive Impairment): 정답률 40% 미만</DescContainer>
+                </ResultContainer>
+              </div>
+            )}
+            <Button onClick={() => { setTestComplete(false); setTotalTime(0); setResults([]); setSelectedSymbols([]); setCorrectSymbols([]); }}>Restart the Test</Button>
           </div>
         )}
-        {testComplete && (
-    <div>
-      <h2>Test Complete</h2>
-      <p>총 걸린 시간: {Math.floor(totalTime / 60)}분 {totalTime % 60}초</p>
-      <p>정답률: {accuracy}%</p>
-      <p>진단 결과: {getDiagnosis()}</p>
-      {testType === 'stroop' && (
-        <div>
-          <h3>Stroop Test 평가 기준</h3>
-          <ul>
-            <li><strong>정상 범위:</strong> 총 걸린 시간 90초 이내, 정답률 90% 이상</li>
-            <li><strong>주의력 결핍 및 과잉행동 장애 (ADHD):</strong> 총 걸린 시간 90초 ~ 135초, 정답률 70% ~ 89%</li>
-            <li><strong>전두엽 손상 (Frontal Lobe Damage):</strong> 총 걸린 시간 135초 ~ 180초, 정답률 50% ~ 69%</li>
-            <li><strong>치매 (Dementia):</strong> 총 걸린 시간 180초 이상, 정답률 50% 미만</li>
-          </ul>
-        </div>
-      )}
-      {testType === 'visual' && (
-        <div>
-          <h3>Visuospatial Memory Test 평가 기준</h3>
-          <ul>
-            <li><strong>정상 범위:</strong> 정답률 80% 이상</li>
-            <li><strong>경도 인지 장애 (Mild Cognitive Impairment):</strong> 정답률 60% ~ 79%</li>
-            <li><strong>중등도 인지 장애 (Moderate Cognitive Impairment):</strong> 정답률 40% ~ 59%</li>
-            <li><strong>심각한 인지 장애 (Severe Cognitive Impairment):</strong> 정답률 40% 미만</li>
-          </ul>
-        </div>
-      )}
-      <button onClick={() => { setTestComplete(false); setTotalTime(0); setResults([]); setSelectedSymbols([]); setCorrectSymbols([]); }}>Restart the Test</button>
+      </Container>
     </div>
-  )}
-      </div>
-    </Container>
   );
 }
 
@@ -288,4 +292,90 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+`;
+
+const TextContainer = styled.div`
+  width: fit-content;
+  height: 50px;
+  padding: 20px;
+  color: black;
+  font-size: 30px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Button = styled.button`
+  flex: 1;
+  padding: 35px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  margin: 20px;
+
+  &:hover {
+    background-color: #333333;  // Hover 시 배경색
+    color: white;  // Hover 시 글자색
+  }
+`;
+
+const StopButton = styled.button`
+  width: 850px;
+  height: 80px;
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  margin: 20px;
+
+  &:hover {
+    background-color: #333333;  // Hover 시 배경색
+    color: white;  // Hover 시 글자색
+  }
+`;
+
+const ResultContainer = styled.div`
+  width: 600px;
+  height: fit-content;
+  align-items: left;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  color: black;
+  background-color: rgba(250, 250, 250, 0.5);
+  border: none;
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  padding-top: 10px;
+  padding-bottom: 10px;
+`;
+
+const DescContainer = styled.div`
+  width: fit-content;
+  text-align: left;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  color: black;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  margin: 5px;
+  padding-left: 15px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  gap: 5px;
 `;
