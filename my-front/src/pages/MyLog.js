@@ -25,12 +25,12 @@ function MyLog() {
   const [sleepTime, setSleepTime] = useState(new Date());
   // 감정 데이터를 상태로 분리
   const [emotions, setEmotions] = useState({
-    Joy: 0,
-    Sadness: 0,
-    Fear: 0,
-    Disgust: 0,
-    Anger: 0,
-    Surprise: 0
+    Joy: 0.2,
+    Sadness: 0.4,
+    Fear: 0.6,
+          Disgust: 0.8,
+          Anger: 1.0,
+          Surprise: 1.0
   });
 
   // 감정 데이터 존재 여부 상태 관리
@@ -52,7 +52,7 @@ function MyLog() {
           console.error('There was an error fetching the nickname!', error);
         });
     } else {
-      // navigate('/login');
+      navigate('/login');
     }
   }, [navigate]);
 
@@ -102,9 +102,23 @@ function MyLog() {
       // 서버에서 감정 데이터를 가져옵니다.
       const emotionsResponse = await axios.get(`http://localhost:3001/user-mylog/${kakaoId}/${selectedDate}/emotion`);
       if (emotionsResponse.data) {
+        const { hex_happy, hex_sad, hex_fear, hex_disgust, hex_anger, hex_surprise } = emotionsResponse.data;//필터링추가
+
         // 감정 데이터가 있으면 상태를 업데이트합니다.
-        setEmotions(emotionsResponse.data);
+
+        setEmotions({
+          Joy: hex_happy,
+          Sadness: hex_sad,
+          Fear: hex_fear,
+          Disgust: hex_disgust,
+          Anger: hex_anger,
+          Surprise: hex_surprise
+        });
         setIsExisting(true);
+      // 일단 주석
+        // setEmotions(emotionsResponse.data);
+        // setIsExisting(true); 
+
       } else {
         // 감정 데이터가 없으면 기본값으로 설정합니다.
         setEmotions({
@@ -131,6 +145,17 @@ function MyLog() {
       setIsExisting(false);
     }
   };
+
+  // 감정 데이터를 로드하는 useEffect 훅 추가
+  useEffect(() => {
+    if (kakaoId && date) {
+      const selectedDate = moment(date).format('YYYY-MM-DD');
+      fetchEmotionsData(kakaoId, selectedDate);
+    }
+  }, [kakaoId, date]);
+
+
+
 
   // 슬라이더 값 변경 시 호출되는 함수입니다.
 const handleSliderChange = (emotion, value) => {

@@ -24,7 +24,7 @@ function WriteDiary() {
     if (storedKakaoId) {
       setKakaoId(storedKakaoId);
     } else {
-      // navigate('/login'); // 사용자 ID가 없는 경우 로그인 페이지로 리디렉션
+      navigate('/login'); // 사용자 ID가 없는 경우 로그인 페이지로 리디렉션
     }
   }, [navigate]);
 

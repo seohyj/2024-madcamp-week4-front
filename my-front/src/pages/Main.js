@@ -23,7 +23,7 @@ function Main() {
   useEffect(() => {
     const storedKakaoId = localStorage.getItem('kakaoId');
     if (!storedKakaoId) {
-      // navigate('/login'); // 로그인되지 않은 경우 로그인 페이지로 리디렉션
+      navigate('/login'); // 로그인되지 않은 경우 로그인 페이지로 리디렉션
     } else {
       setKakaoId(storedKakaoId);
     }
