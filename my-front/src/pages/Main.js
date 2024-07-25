@@ -20,14 +20,14 @@ function Main() {
   const [kakaoId, setKakaoId] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  /*useEffect(() => {
     const storedKakaoId = localStorage.getItem('kakaoId');
     if (!storedKakaoId) {
       navigate('/login'); // 로그인되지 않은 경우 로그인 페이지로 리디렉션
     } else {
       setKakaoId(storedKakaoId);
     }
-  }, [navigate]);
+  }, [navigate]);*/
 
   const handleLogout = () => {
     localStorage.removeItem('kakaoId');

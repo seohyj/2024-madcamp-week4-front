@@ -52,7 +52,7 @@ function MyLog() {
           console.error('There was an error fetching the nickname!', error);
         });
     } else {
-      navigate('/login');
+      // navigate('/login');
     }
   }, [navigate]);
 
@@ -244,7 +244,6 @@ const handleSliderChange = (emotion, value) => {
                   dateFormat="h:mm aa" 
                   customInput={<InputField />} 
                 />
-                {/* 기상 시각 기록 버튼 */}
                 <Button onClick={handleRecordWakeTime}>기상시각 기록</Button>
               </InputBox>
               <InputBox>
@@ -260,7 +259,6 @@ const handleSliderChange = (emotion, value) => {
                   dateFormat="h:mm aa"
                   customInput={<InputField />}
                 />
-                {/* 취침 시각 기록 버튼 */}
                 <Button onClick={handleRecordSleepTime}>취침시각 기록</Button>
               </InputBox>
                {/* 일기 쓰기 버튼 */}
@@ -426,13 +424,13 @@ const StyledCalendar = styled(Calendar)`
 const Button = styled.button`
   flex: 1;
   padding: 10px;
-  background: black;
+  background: rgba(0, 0, 0, 0.8);
   color: white;
   border: none;
   border-radius: 10px;
-  font-size: 12px;
+  font-size: 13px;
   font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
+  font-weight: 700;
 
   &:hover {
     background-color: #333333;  // Hover 시 배경색
@@ -501,6 +499,9 @@ const InputField = styled.input`
   text-align: center;
   border: 1px #CCCCCC solid;
   border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
 `;
 
 const RadarWrapper = styled.div`
